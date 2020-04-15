@@ -1,0 +1,10 @@
+General idea:
+    you are a cell 
+    there are bad cells
+    you want to stay alive
+    there is an infinite(?) world
+    you can stockpile goods
+        do this because there is day and night
+        at night bad things happen?
+
+
