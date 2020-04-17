@@ -35,7 +35,7 @@ public class CellGroup : MonoBehaviour {
     }
 
     public SpringJoint2D MakeJoint(SimplePart sp1, SimplePart sp2) {
-        Assert.AreNotEqual(sp1, sp2);
+        Assert.AreNotEqual(sp1, sp2, "Joints must be between two different cell parts");
         var joint = GetJoint(sp1, sp2);
         if (joint != null) {
             return joint;

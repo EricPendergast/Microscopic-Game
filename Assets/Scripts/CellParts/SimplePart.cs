@@ -13,7 +13,7 @@ public class SimplePart : MonoBehaviour {
     public void Start() {
         body = GetComponent<Rigidbody2D>();
         SetParent(transform.parent.GetComponent<CellGroup>());
-        //StartCoroutine(UpdateSprings());
+        StartCoroutine(UpdateSpringsCoroutine());
     }
 
     // Always use this to change parents
@@ -29,34 +29,38 @@ public class SimplePart : MonoBehaviour {
         transform.SetParent(newCellGroup.transform);
         cellGroup = transform.parent.GetComponent<CellGroup>();
 
-        if (cellGroup != null) {
-            // Connect to all other close things
-            // TODO: Don't connect everything, only close things
-            foreach (SimplePart sibling in cellGroup.GetCellParts()) {
-                if (sibling == this) {
-                    continue;
-                }
-                SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
-                conn.distance = Random.value*3;
-                conn.frequency = 1;
-            }
-        }
+        UpdateSprings();
     }
 
     public CellGroup GetCellGroup() {
         return cellGroup;
     }
 
-    // This may be too silly
-    //IEnumerator<WaitForSeconds> UpdateSprings() {
-    //    while (true) {
-    //        foreach (SpringJoint2D conn in joints) {
-    //            conn.distance += 1f*(1 - Random.value*2);
-    //            conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
-    //        }
-    //        yield return new WaitForSeconds(Random.value*10f);
-    //    }
-    //}
+    IEnumerator<WaitForSeconds> UpdateSpringsCoroutine(){
+        while (true) {
+            UpdateSprings();
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    void UpdateSprings() {
+        if (cellGroup != null) {
+            foreach (SimplePart sibling in cellGroup.GetCellParts()) {
+                if (sibling == this) {
+                    continue;
+                }
+                if ((transform.position - sibling.transform.position).magnitude < 2) {
+                    SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
+                    //conn.distance += 1f*(1 - Random.value*2);
+                    //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
+                    conn.distance = 1.5f;
+                    conn.frequency = 1;
+                } else {
+                    cellGroup.DestroyJoint(this, sibling);
+                }
+            }
+        }
+    }
 
     public void Update() {
         body.velocity = body.velocity*(friction);
