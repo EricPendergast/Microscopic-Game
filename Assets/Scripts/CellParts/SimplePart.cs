@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimplePart : MonoBehaviour {
-    private float friction = .99f;
-
     protected Rigidbody2D body;
     private CellGroup cellGroup = null;
 
@@ -39,7 +37,7 @@ public class SimplePart : MonoBehaviour {
     IEnumerator<WaitForSeconds> UpdateSpringsCoroutine(){
         while (true) {
             UpdateSprings();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(CellPartBalance.i.springUpdateTime);
         }
     }
 
@@ -49,12 +47,12 @@ public class SimplePart : MonoBehaviour {
                 if (sibling == this) {
                     continue;
                 }
-                if ((transform.position - sibling.transform.position).magnitude < 2) {
+                if ((transform.position - sibling.transform.position).magnitude < CellPartBalance.i.springMaxDist) {
                     SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
                     //conn.distance += 1f*(1 - Random.value*2);
                     //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
-                    conn.distance = 1.5f;
-                    conn.frequency = 1;
+                    conn.distance = CellPartBalance.i.springDist;
+                    conn.frequency = CellPartBalance.i.springFreq;
                 } else {
                     cellGroup.DestroyJoint(this, sibling);
                 }
@@ -63,6 +61,6 @@ public class SimplePart : MonoBehaviour {
     }
 
     public void Update() {
-        body.velocity = body.velocity*(friction);
+        body.velocity = body.velocity*(CellPartBalance.i.friction);
     }
 }

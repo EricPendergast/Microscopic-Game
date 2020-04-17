@@ -7,6 +7,8 @@ public class CellGroup : MonoBehaviour {
     public bool addFlagella = false;
     public bool addLump = false;
 
+    public bool isPlayer = false;
+
     public void Start() {
     }
 
