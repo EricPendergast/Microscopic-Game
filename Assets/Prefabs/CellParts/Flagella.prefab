@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55774ba56f485a28ca03b173b6cca170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  friction: 0.99
   joints: []
   accel: 10
 --- !u!1001 &7912023199694790485
@@ -22,6 +21,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6789981924681045441, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.4183483
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789981924681045441, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789981924681045441, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6789981924681045443, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}
       propertyPath: m_LocalPosition.x
