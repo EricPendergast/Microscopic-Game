@@ -5,6 +5,11 @@ Shader "Unlit/Background Shader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        diameter ("Ring diameters", Float) = 1
+        thickness ("Ring thicknesses", Float) = .1
+        scale ("Overall scale", Float) = 1
+        checkDistance ("Check distance", Int) = 2
+        ringColor ("Color", Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -39,6 +44,12 @@ Shader "Unlit/Background Shader"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float diameter;
+            float thickness;
+            int checkDistance;
+            float scale;
+            float4 ringColor;
+            float sh;
 
             v2f vert (appdata v)
             {
@@ -65,28 +76,42 @@ Shader "Unlit/Background Shader"
                 return fract(sin(dot(co.xy, float2(12.9898,78.233))) * 43758.5453);
             }
 
+            float ringFcn1(float dist) {
+                return clamp(-pow(1/thickness*dist-diameter/thickness, 2)+1, 0, 1);
+            }
+            
+            float ringFcn2(float dist) {
+                dist -= diameter;
+                dist *= 3;
+                return clamp(1.5*pow(dist/thickness,4) - pow(dist/thickness, 6) + .5, 0, 1);
+            }
+
             float getCircleNoise(float2 pos) {
                 float2 middleCell = floor(pos);
                 float ringsSum = 0;
 
-                for (int x = -1; x <= 1; x++) {
-                    for (int y = -1; y <= 1; y++) {
+                //int checkDistance = 2;
+                for (int x = -checkDistance; x <= checkDistance; x++) {
+                    for (int y = -checkDistance; y <= checkDistance; y++) {
 
                         float2 cell = middleCell + float2(x, y);
                         float2 circleCenter = float2(rand3D(float3(cell, 1)), rand3D(float3(cell, 2)));
 
                         float dist = distance(pos, cell + circleCenter);
 
-                        ringsSum += clamp(-pow(50*dist-20, 2)+1, 0, 1);
+                        //float thickness = .4;
+                        //float diameter = 1;
+                        //float sharpness = 4;
+                        ringsSum += pow(ringFcn2(dist), 2);
                     }
                 }
 
-                return ringsSum;
+                return sqrt(ringsSum);
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return getCircleNoise(i.world_position.xy/10) * float4(.25, .25, .25, 1);
+                return getCircleNoise(i.world_position.xy/scale) * ringColor;
                 // return float4(abs(i.world_position.x)%1,1,0,1);
             }
 
