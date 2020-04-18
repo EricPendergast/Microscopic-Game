@@ -51,11 +51,51 @@ Shader "Unlit/Background Shader"
                 return o;
             }
 
+
+
+            float fract(float f) {
+                return f - floor(f);
+            }
+
+            float rand3D(float3 co){
+                return fract(sin(dot(co.xyz, float3(12.9898,78.233,144.7272))) * 43758.5453);
+            }
+
+            float rand2D(float2 co){
+                return fract(sin(dot(co.xy, float2(12.9898,78.233))) * 43758.5453);
+            }
+
+            float getCircleNoise(float2 pos) {
+                float2 middleCell = floor(pos);
+                float ringsSum = 0;
+
+                for (int x = -1; x <= 1; x++) {
+                    for (int y = -1; y <= 1; y++) {
+
+                        float2 cell = middleCell + float2(x, y);
+                        float2 circleCenter = float2(rand3D(float3(cell, 1)), rand3D(float3(cell, 2)));
+
+                        float dist = distance(pos, cell + circleCenter);
+
+                        ringsSum += clamp(-pow(50*dist-20, 2)+1, 0, 1);
+                    }
+                }
+
+                return ringsSum;
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
-
-                return float4(abs(i.world_position.x)%1,1,0,1);
+                return getCircleNoise(i.world_position.xy/10) * float4(.25, .25, .25, 1);
+                // return float4(abs(i.world_position.x)%1,1,0,1);
             }
+
+
+            float interpolate(float a, float w, float b, float p){
+	            float t = p/w;
+	            return (b-a)*t*t*t*(6*t*t-15*t+10) + a;
+            }
+
             ENDCG
         }
     }
