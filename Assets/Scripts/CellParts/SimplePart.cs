@@ -84,6 +84,19 @@ public class SimplePart : MonoBehaviour {
         return siblings;
     }
 
+    public List<SimplePart> GetAll() {
+        var siblings = new List<SimplePart>();
+        if (GetCellGroup() == null) {
+            return siblings;
+        }
+
+        foreach (SimplePart sibling in GetCellGroup().GetCellParts()) {
+            siblings.Add(sibling);
+        }
+        
+        return siblings;
+    }
+
     public float Distance(SimplePart sp1) {
         return (transform.position - sp1.transform.position).magnitude;
     }
