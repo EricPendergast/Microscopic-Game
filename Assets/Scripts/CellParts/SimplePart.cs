@@ -37,13 +37,16 @@ public class SimplePart : MonoBehaviour {
     IEnumerator<WaitForSeconds> UpdateSpringsCoroutine(){
         while (true) {
             UpdateSprings();
-            yield return new WaitForSeconds(CellPartBalance.i.springUpdateTime);
+            yield return new WaitForSeconds(.5f + Random.value * CellPartBalance.i.springUpdateTime);
         }
     }
 
     public virtual void UpdateSprings() {
+        int count = 0;
         foreach (SimplePart sibling in GetSiblings()) {
             if (Distance(sibling) < CellPartBalance.i.springMaxDist) {
+                if (count++ > 6)
+                    return;
                 SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
                 //conn.distance += 1f*(1 - Random.value*2);
                 //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);

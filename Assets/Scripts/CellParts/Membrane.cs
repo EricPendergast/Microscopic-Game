@@ -24,13 +24,15 @@ public class Membrane : SimplePart {
                         m.immediateConnections.Contains(immediateConnections[0])) {
                         continue;
                     }
-                    conn.distance = CellPartBalance.i.springDist;
-                    conn.frequency = CellPartBalance.i.springFreq*3;
+                    conn.distance = MembraneBalance.i.immediateSpringDist;
+                    conn.frequency = MembraneBalance.i.immediateSpringFreq;
                     immediateConnections.Add(m);
-                } else if (Distance(sibling) < CellPartBalance.i.springMaxDist) {
-                    conn.distance = CellPartBalance.i.springDist*2;
-                    conn.frequency = CellPartBalance.i.springFreq;
+                } else if (Distance(sibling) < MembraneBalance.i.awayMaxDist) {
+                    conn.distance = MembraneBalance.i.awaySpringDist;
+                    conn.frequency = MembraneBalance.i.awaySpringFreq;
                 }
+            } else {
+                //GetCellGroup().DestroyJoint(this, sibling);
             }
         }
         //foreach (SimplePart sibling in siblingsByDistance) {
