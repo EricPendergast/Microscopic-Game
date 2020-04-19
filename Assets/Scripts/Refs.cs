@@ -6,6 +6,7 @@ public class Refs : MonoBehaviour {
 
     public GameObject flagella;
     public GameObject lump;
+    public GameObject membrane;
 
     public void Start() {
         Assert.IsNull(inst);

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+// Interactions between cell parts should be facillitated by their cell group
 public class CellGroup : MonoBehaviour {
     public bool addFlagella = false;
     public bool addLump = false;
+    public bool addMembrane = false;
 
     public bool isPlayer = false;
 
@@ -13,14 +15,32 @@ public class CellGroup : MonoBehaviour {
     }
 
     public void Update() {
+        var com = CenterOfMass();
         if (addLump) {
             addLump = false;
-            GameObject.Instantiate(Refs.inst.lump, transform);
+            GameObject.Instantiate(Refs.inst.lump, transform).transform.position = com;
         }
         if (addFlagella) {
             addFlagella = false;
-            GameObject.Instantiate(Refs.inst.flagella, transform);
+            GameObject.Instantiate(Refs.inst.flagella, transform).transform.position = com;
         }
+        if (addMembrane) {
+            addMembrane = false;
+            GameObject.Instantiate(Refs.inst.membrane, transform).transform.position = com;
+        }
+    }
+
+    public Vector3 CenterOfMass() {
+        //TODO: Optimization, cache this value at the beginning of each tick
+        Vector3 com = new Vector3();
+        int count = 0;
+
+        foreach (SimplePart sp in GetCellParts()) {
+            com += sp.transform.position;
+            count++;
+        }
+
+        return com/count;
     }
 
     public List<SimplePart> GetCellParts() {
@@ -80,5 +100,13 @@ public class CellGroup : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    public SimplePart WhoControlsJoint(SimplePart sp1, SimplePart sp2) {
+        if (sp1.JointDesire(sp2) > sp2.JointDesire(sp1)) {
+            return sp1;
+        } else {
+            return sp2;
+        }
     }
 }

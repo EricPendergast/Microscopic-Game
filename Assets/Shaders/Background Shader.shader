@@ -96,8 +96,7 @@ Shader "Unlit/Background Shader"
 
                         float2 cell = middleCell + float2(x, y);
                         float2 circleCenter = float2(rand3D(float3(cell, 1)), rand3D(float3(cell, 2)));
-
-                        float dist = distance(pos, cell + circleCenter);
+                        float dist = distance(pos, cell + circleCenter) - clamp(rand3D(float3(cell, 3)), .1, 1);
 
                         //float thickness = .4;
                         //float diameter = 1;

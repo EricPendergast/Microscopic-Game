@@ -41,26 +41,47 @@ public class SimplePart : MonoBehaviour {
         }
     }
 
-    void UpdateSprings() {
-        if (cellGroup != null) {
-            foreach (SimplePart sibling in cellGroup.GetCellParts()) {
-                if (sibling == this) {
-                    continue;
-                }
-                if ((transform.position - sibling.transform.position).magnitude < CellPartBalance.i.springMaxDist) {
-                    SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
-                    //conn.distance += 1f*(1 - Random.value*2);
-                    //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
-                    conn.distance = CellPartBalance.i.springDist;
-                    conn.frequency = CellPartBalance.i.springFreq;
-                } else {
-                    cellGroup.DestroyJoint(this, sibling);
-                }
+    public virtual void UpdateSprings() {
+        foreach (SimplePart sibling in GetSiblings()) {
+            if (Distance(sibling) < CellPartBalance.i.springMaxDist) {
+                SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
+                //conn.distance += 1f*(1 - Random.value*2);
+                //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
+                conn.distance = CellPartBalance.i.springDist;
+                conn.frequency = CellPartBalance.i.springFreq;
+            } else {
+                cellGroup.DestroyJoint(this, sibling);
             }
         }
     }
 
     public void Update() {
         body.velocity = body.velocity*(CellPartBalance.i.friction);
+    }
+
+    // Returns an integer representing how much this cell part wants to control
+    // the joint from it to the other cell part
+    public virtual int JointDesire(SimplePart other) {
+        return 0;
+    }
+
+    public List<SimplePart> GetSiblings() {
+        var siblings = new List<SimplePart>();
+        if (GetCellGroup() == null) {
+            return siblings;
+        }
+
+        foreach (SimplePart sibling in GetCellGroup().GetCellParts()) {
+            if (sibling == this) {
+                continue;
+            }
+            siblings.Add(sibling);
+        }
+        
+        return siblings;
+    }
+
+    public float Distance(SimplePart sp1) {
+        return (transform.position - sp1.transform.position).magnitude;
     }
 }
