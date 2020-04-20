@@ -7,22 +7,42 @@ public class Cytoskeleton : SimplePart {
         base.Start();
     }
 
-    void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.TryGetComponent(out SimplePart part)) {
-            if (part is Cytoskeleton && this.GetInstanceID() < part.GetInstanceID()) {
-                return;
-            }
-            Debug.Log("TRIGGER ENTER");
+    new void OnMouseUp() {
+        Debug.Log("Cytoskeleton mouse up over [" + Mouse.currentlyOver+ "] ["+ null+ "]");
+        // TODO: Make this toggle the joint
+        if (Mouse.currentlyOver != null) {
             var joint = gameObject.AddComponent<RelativeJoint2D>();
-            joint.connectedBody = part.gameObject.GetComponent<Rigidbody2D>();
-            Debug.Log(joint.linearOffset + " " + joint.linearOffset.magnitude);
-            joint.linearOffset = joint.linearOffset/2;
+            joint.connectedBody = Mouse.currentlyOver.gameObject.GetComponent<Rigidbody2D>();
+            //joint.linearOffset = joint.linearOffset/2;
             joint.autoConfigureOffset = false;
             joint.maxForce = 10;
-            Debug.Log(joint.linearOffset + " " + joint.linearOffset.magnitude);
             joint.enableCollision = true;
-            Debug.Log(gameObject.GetComponents<RelativeJoint2D>());
         }
+    }
+
+    new void OnMouseDrag() {
+        //Debug.Log("Cytoskeleton mouse up");
+        //Mouse.OnMouseDragCellPart(this);
+    }
+
+    //new void 
+
+    void OnTriggerEnter2D(Collider2D collision) {
+        //if (collision.gameObject.TryGetComponent(out SimplePart part)) {
+        //    if (part is Cytoskeleton && this.GetInstanceID() < part.GetInstanceID()) {
+        //        return;
+        //    }
+        //    //Debug.Log("TRIGGER ENTER");
+        //    var joint = gameObject.AddComponent<RelativeJoint2D>();
+        //    joint.connectedBody = part.gameObject.GetComponent<Rigidbody2D>();
+        //    Debug.Log(joint.linearOffset + " " + joint.linearOffset.magnitude);
+        //    joint.linearOffset = joint.linearOffset/2;
+        //    joint.autoConfigureOffset = false;
+        //    joint.maxForce = 10;
+        //    Debug.Log(joint.linearOffset + " " + joint.linearOffset.magnitude);
+        //    joint.enableCollision = true;
+        //    Debug.Log(gameObject.GetComponents<RelativeJoint2D>());
+        //}
     }
 
     void OnTriggerExit2D(Collider2D collision) {

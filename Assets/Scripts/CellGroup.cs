@@ -15,7 +15,7 @@ public class CellGroup : MonoBehaviour {
     }
 
     public void Update() {
-        var com = CenterOfMass();
+        var com = CalculateCenterOfMass();
         if (addLump) {
             addLump = false;
             GameObject.Instantiate(Refs.inst.lump, transform).transform.position = com;
@@ -30,7 +30,7 @@ public class CellGroup : MonoBehaviour {
         }
     }
 
-    public Vector3 CenterOfMass() {
+    public Vector3 CalculateCenterOfMass() {
         //TODO: Optimization, cache this value at the beginning of each tick
         Vector3 com = new Vector3();
         int count = 0;

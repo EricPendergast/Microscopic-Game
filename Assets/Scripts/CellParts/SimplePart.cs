@@ -5,34 +5,24 @@ using UnityEngine;
 public class SimplePart : MonoBehaviour {
     protected Rigidbody2D body;
     private CellGroup cellGroup = null;
-    public static SimplePart currentlySelected;
-
     //public List<SpringJoint2D> joints;
     
-    public void OnMouseDown() {
-        if (currentlySelected == null) {
-            SimplePart.currentlySelected = this;
-            StartCoroutine(DragCoroutine());
-        }
-    }
-
     public void OnMouseUp() {
-        if (currentlySelected == this) {
-            currentlySelected = null;
-        }
+        Debug.Log("Released");
+        Destroy(GetComponent<TargetJoint2D>());
     }
 
-    public IEnumerator DragCoroutine() {
-        while (currentlySelected == this) {
-            var mouseSpring = GetComponent<TargetJoint2D>();
-            if (mouseSpring == null) {
-                mouseSpring = gameObject.AddComponent<TargetJoint2D>();
-            }
-            mouseSpring.target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            yield return null;
-        }
+    public void OnMouseOver() {
+        Mouse.OnMouseOverCellPart(this);
+    }
 
-        Destroy(GetComponent<TargetJoint2D>());
+    public void OnMouseDrag() {
+        //Mouse.OnMouseDragCellPart(this);
+        var mouseSpring = GetComponent<TargetJoint2D>();
+        if (mouseSpring == null) {
+            mouseSpring = gameObject.AddComponent<TargetJoint2D>();
+        }
+        mouseSpring.target = Mouse.WorldPosition();
     }
 
     public void Start() {
