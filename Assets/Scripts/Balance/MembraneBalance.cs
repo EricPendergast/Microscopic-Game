@@ -14,7 +14,11 @@ public class MembraneBalance : MonoBehaviour {
     public float awayMaxDist = 3;
 
     MembraneBalance() {
-        Assert.IsNull(i);
+        if (i == null) {
+            Debug.Log("New MembraneBalance created");
+        } else {
+            Debug.Log("MembraneBalance replaced");
+        }
         i = this;
     }
 }

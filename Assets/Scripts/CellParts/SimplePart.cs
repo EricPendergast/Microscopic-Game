@@ -1,12 +1,39 @@
-//using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SimplePart : MonoBehaviour {
     protected Rigidbody2D body;
     private CellGroup cellGroup = null;
+    public static SimplePart currentlySelected;
 
     //public List<SpringJoint2D> joints;
+    
+    public void OnMouseDown() {
+        if (currentlySelected == null) {
+            SimplePart.currentlySelected = this;
+            StartCoroutine(DragCoroutine());
+        }
+    }
+
+    public void OnMouseUp() {
+        if (currentlySelected == this) {
+            currentlySelected = null;
+        }
+    }
+
+    public IEnumerator DragCoroutine() {
+        while (currentlySelected == this) {
+            var mouseSpring = GetComponent<TargetJoint2D>();
+            if (mouseSpring == null) {
+                mouseSpring = gameObject.AddComponent<TargetJoint2D>();
+            }
+            mouseSpring.target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            yield return null;
+        }
+
+        Destroy(GetComponent<TargetJoint2D>());
+    }
 
     public void Start() {
         body = GetComponent<Rigidbody2D>();
@@ -14,6 +41,7 @@ public class SimplePart : MonoBehaviour {
         StartCoroutine(UpdateSpringsCoroutine());
     }
 
+    // TODO: This can get called by the event OnTransformParentChanged
     // Always use this to change parents
     public void SetParent(CellGroup newCellGroup) {
         if (newCellGroup == cellGroup) {
@@ -34,7 +62,7 @@ public class SimplePart : MonoBehaviour {
         return cellGroup;
     }
 
-    IEnumerator<WaitForSeconds> UpdateSpringsCoroutine(){
+    IEnumerator UpdateSpringsCoroutine(){
         while (true) {
             UpdateSprings();
             yield return new WaitForSeconds(.5f + Random.value * CellPartBalance.i.springUpdateTime);

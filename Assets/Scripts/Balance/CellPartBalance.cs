@@ -12,7 +12,11 @@ public class CellPartBalance : MonoBehaviour {
     public float springUpdateTime = 1;
 
     CellPartBalance() {
-        Assert.IsNull(i);
+        if (i == null) {
+            Debug.Log("New CellPartBalance created");
+        } else {
+            Debug.Log("CellPartBalance replaced");
+        }
         i = this;
     }
 }

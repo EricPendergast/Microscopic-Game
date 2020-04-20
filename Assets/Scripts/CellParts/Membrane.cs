@@ -20,10 +20,14 @@ public class Membrane : SimplePart {
         //}
         //base.UpdateSprings();
         // The set of all membranes
+        Nucleus nucleus = null;
         var siblings = new List<Membrane>();
         foreach (SimplePart sibling in GetAll()) {
             if (sibling is Membrane m) {
                 siblings.Add(m);
+            }
+            if (sibling is Nucleus n) {
+                nucleus = n;
             }
         }
 
@@ -51,6 +55,8 @@ public class Membrane : SimplePart {
 
         //Assert.IsNotNull(left);
         //Assert.IsNotNull(right);
+        //
+        int count = 0;
 
         foreach (Membrane sibling in siblings) {
             if (sibling == near[1] || sibling == near[3]) {
@@ -58,14 +64,20 @@ public class Membrane : SimplePart {
                 conn.distance = MembraneBalance.i.immediateSpringDist;
                 conn.frequency = MembraneBalance.i.immediateSpringFreq;
             } else if (sibling != this) {
-                //if (sibling == near[0] || sibling == near[4]) {
-                var conn = GetCellGroup().MakeJoint(this, sibling);
-                conn.distance = MembraneBalance.i.awaySpringDist;
-                conn.frequency = MembraneBalance.i.awaySpringFreq;
-            }// else {
-                //GetCellGroup().DestroyJoint(this, sibling);
-            ///}
+                if (Random.value < 1.0/siblings.Count) {
+                    //if (sibling == near[0] || sibling == near[4]) {
+                    var conn = GetCellGroup().MakeJoint(this, sibling);
+                    conn.distance = MembraneBalance.i.awaySpringDist;
+                    conn.frequency = MembraneBalance.i.awaySpringFreq;
+                }
+            } else {
+                GetCellGroup().DestroyJoint(this, sibling);
+            }
         }
+        Debug.Log(count);
+        //var conn2 = GetCellGroup().MakeJoint(this, nucleus);
+        //conn2.distance = MembraneBalance.i.awaySpringDist;
+        //conn2.frequency = MembraneBalance.i.awaySpringFreq;
     }
 
     public override int JointDesire(SimplePart other) {
