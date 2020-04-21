@@ -1,54 +1,70 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class Membrane : SimplePart {
-    private List<Membrane> immediateConnections = new List<Membrane>();
+    private Membrane left;
+    private Membrane right;
+    private float order;
     
 
+    void Awake() {
+        order = Random.value;
+    }
+
     public override void UpdateSprings() {
-        base.UpdateSprings();
-        var siblingsByDistance = GetSiblings();
-        siblingsByDistance.Sort(delegate(SimplePart sp1, SimplePart sp2) {
-            return Distance(sp1) > Distance(sp2) ? 1 : -1;
-        });
-
-        immediateConnections.Clear();
-
-        foreach (SimplePart sibling in siblingsByDistance) {
+        //Assert.AreEqual(left == null, right == null);
+        //if (left != null) {
+            //return;
+        //}
+        //base.UpdateSprings();
+        // The set of all membranes
+        var siblings = new List<Membrane>();
+        foreach (SimplePart sibling in GetAll()) {
             if (sibling is Membrane m) {
-                if (immediateConnections.Count < 2) {
-                    SpringJoint2D conn = GetCellGroup().MakeJoint(this, m);
-                    // Prevents triangles
-                    if (immediateConnections.Count == 1 &&
-                        m.immediateConnections.Contains(immediateConnections[0])) {
-                        continue;
-                    }
-                    conn.distance = MembraneBalance.i.immediateSpringDist;
-                    conn.frequency = MembraneBalance.i.immediateSpringFreq;
-                    immediateConnections.Add(m);
-                } else if (Distance(sibling) < MembraneBalance.i.awayMaxDist) {
-                    SpringJoint2D conn = GetCellGroup().MakeJoint(this, m);
-                    conn.distance = MembraneBalance.i.awaySpringDist;
-                    conn.frequency = MembraneBalance.i.awaySpringFreq;
-                } else {
-                    GetCellGroup().DestroyJoint(this, sibling);
-                }
-            } else {
-                GetCellGroup().DestroyJoint(this, sibling);
+                siblings.Add(m);
             }
         }
-        //foreach (SimplePart sibling in siblingsByDistance) {
-        //    if (Distance(sibling) < CellPartBalance.i.springMaxDist) {
-        //        SpringJoint2D conn = GetCellGroup().MakeJoint(this, sibling);
-        //        //conn.distance += 1f*(1 - Random.value*2);
-        //        //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
-        //        conn.distance = CellPartBalance.i.springDist;
-        //        conn.frequency = CellPartBalance.i.springFreq;
-        //    } else {
-        //        GetCellGroup().DestroyJoint(this, sibling);
-        //    }
-        //}
+
+        int siz = 3;
+        if (siblings.Count < siz*2 + 1) {
+            return;
+        }
+
+        siblings.Sort(delegate(Membrane m1, Membrane m2) {
+            return m1.order > m2.order ? 1 : -1;
+        });
+
+        //Membrane left = null;
+        //Membrane right = null;
+        
+        int me = 0;
+        for (me = 0; me < siblings.Count; me++) {
+            if (siblings[me] == this) {
+                break;
+            }
+        }
+
+        // TODO: Optimize this
+        foreach (Membrane sibling in siblings) {
+            GetCellGroup().DestroyJoint(this, sibling);
+        }
+
+        for (int j = -siz; j <= siz; j++) {
+            Membrane nearSib = siblings[(me+j+siblings.Count)%siblings.Count];
+            if (j == 0) {
+                continue;
+            }
+            int difference = j < 0 ? -j : j;
+
+            var conn = GetCellGroup().MakeJoint(this, nearSib);
+            conn.distance = MembraneBalance.i.immediateSpringDist*difference;
+            conn.frequency = MembraneBalance.i.immediateSpringFreq*difference;
+        }
+
+        //Assert.IsNotNull(left);
+        //Assert.IsNotNull(right);
     }
 
     public override int JointDesire(SimplePart other) {
