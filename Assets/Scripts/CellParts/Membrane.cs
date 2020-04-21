@@ -20,51 +20,24 @@ public class Membrane : SimplePart {
         //}
         //base.UpdateSprings();
         // The set of all membranes
-        var siblings = new List<Membrane>();
+        Nucleus nucleus = null;
         foreach (SimplePart sibling in GetAll()) {
-            if (sibling is Membrane m) {
-                siblings.Add(m);
+            if (sibling is Nucleus n) {
+                nucleus = n;
             }
         }
 
-        int siz = 3;
-        if (siblings.Count < siz*2 + 1) {
-            return;
+        RelativeJoint2D conn = gameObject.GetComponent<RelativeJoint2D>();
+        if (conn == null) {
+            conn = gameObject.AddComponent<RelativeJoint2D>();
         }
-
-        siblings.Sort(delegate(Membrane m1, Membrane m2) {
-            return m1.order > m2.order ? 1 : -1;
-        });
-
-        //Membrane left = null;
-        //Membrane right = null;
-        
-        int me = 0;
-        for (me = 0; me < siblings.Count; me++) {
-            if (siblings[me] == this) {
-                break;
-            }
-        }
-
-        // TODO: Optimize this
-        foreach (Membrane sibling in siblings) {
-            GetCellGroup().DestroyJoint(this, sibling);
-        }
-
-        for (int j = -siz; j <= siz; j++) {
-            Membrane nearSib = siblings[(me+j+siblings.Count)%siblings.Count];
-            if (j == 0) {
-                continue;
-            }
-            int difference = j < 0 ? -j : j;
-
-            var conn = GetCellGroup().MakeJoint(this, nearSib);
-            conn.distance = MembraneBalance.i.immediateSpringDist*difference;
-            conn.frequency = MembraneBalance.i.immediateSpringFreq*difference;
-        }
-
-        //Assert.IsNotNull(left);
-        //Assert.IsNotNull(right);
+        conn.connectedBody = nucleus.GetComponent<Rigidbody2D>();
+        conn.linearOffset = new Vector2(Mathf.Cos(order*6.28f), Mathf.Sin(order*6.28f))*MembraneBalance.i.awaySpringDist;
+        conn.maxForce = 20;
+        conn.autoConfigureOffset = false;
+        //conn.distance = MembraneBalance.i.immediateSpringDist*difference;
+        //conn.frequency = MembraneBalance.i.immediateSpringFreq*difference;
+        //conn.maxForce = MembraneBalance
     }
 
     public override int JointDesire(SimplePart other) {
