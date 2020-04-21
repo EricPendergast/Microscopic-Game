@@ -48,7 +48,7 @@ MonoBehaviour:
   springDist: 1.5
   springFreq: 1.5
   springMaxDist: 2
-  springUpdateTime: 0.04
+  springUpdateTime: 1
 --- !u!114 &375456342767243175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,8 +62,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   immediateSpringDist: 1
-  immediateSpringFreq: 3
-  awaySpringDist: 5.33
+  immediateSpringFreq: 6
+  awaySpringDist: 2
   awaySpringFreq: 1
   immediateMaxDist: 3
-  awayMaxDist: 3
+  awayMaxDist: 2.25
+  straighteningForce: 1

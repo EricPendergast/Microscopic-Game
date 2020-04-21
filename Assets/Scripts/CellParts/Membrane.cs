@@ -1,83 +1,51 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 public class Membrane : SimplePart {
-    private Membrane left;
-    private Membrane right;
-    private float order;
+    private List<Membrane> immediateConnections = new List<Membrane>();
     
 
-    void Awake() {
-        order = Random.value;
-    }
-
     public override void UpdateSprings() {
-        //Assert.AreEqual(left == null, right == null);
-        //if (left != null) {
-            //return;
-        //}
-        //base.UpdateSprings();
-        // The set of all membranes
-        Nucleus nucleus = null;
-        var siblings = new List<Membrane>();
-        foreach (SimplePart sibling in GetAll()) {
-            if (sibling is Membrane m) {
-                siblings.Add(m);
-            }
-            if (sibling is Nucleus n) {
-                nucleus = n;
-            }
-        }
-
-        if (siblings.Count < 5) {
-            return;
-        }
-
-        siblings.Sort(delegate(Membrane m1, Membrane m2) {
-            return m1.order > m2.order ? 1 : -1;
+        base.UpdateSprings();
+        var siblingsByDistance = GetSiblings();
+        siblingsByDistance.Sort(delegate(SimplePart sp1, SimplePart sp2) {
+            return Distance(sp1) > Distance(sp2) ? 1 : -1;
         });
 
-        //Membrane left = null;
-        //Membrane right = null;
+        immediateConnections.Clear();
 
-        var near = new List<Membrane>();
-
-        for (int i = 0; i < siblings.Count; i++) {
-            if (siblings[i] == this) {
-                for (int j = -2; j <= 2; j++) {
-                    near.Add(siblings[(i+j+siblings.Count)%siblings.Count]);
-                }
-                break;
-            }
-        }
-
-        //Assert.IsNotNull(left);
-        //Assert.IsNotNull(right);
-        //
-        int count = 0;
-
-        foreach (Membrane sibling in siblings) {
-            if (sibling == near[1] || sibling == near[3]) {
-                var conn = GetCellGroup().MakeJoint(this, sibling);
-                conn.distance = MembraneBalance.i.immediateSpringDist;
-                conn.frequency = MembraneBalance.i.immediateSpringFreq;
-            } else if (sibling != this) {
-                if (Random.value < 1.0/siblings.Count) {
-                    //if (sibling == near[0] || sibling == near[4]) {
-                    var conn = GetCellGroup().MakeJoint(this, sibling);
+        foreach (SimplePart sibling in siblingsByDistance) {
+            if (sibling is Membrane m) {
+                SpringJoint2D conn = GetCellGroup().MakeJoint(this, m);
+                if (immediateConnections.Count < 2) {
+                    // Prevents triangles
+                    if (immediateConnections.Count == 1 &&
+                        m.immediateConnections.Contains(immediateConnections[0])) {
+                        continue;
+                    }
+                    conn.distance = MembraneBalance.i.immediateSpringDist;
+                    conn.frequency = MembraneBalance.i.immediateSpringFreq;
+                    immediateConnections.Add(m);
+                } else if (Distance(sibling) < MembraneBalance.i.awayMaxDist) {
                     conn.distance = MembraneBalance.i.awaySpringDist;
                     conn.frequency = MembraneBalance.i.awaySpringFreq;
                 }
             } else {
-                GetCellGroup().DestroyJoint(this, sibling);
+                //GetCellGroup().DestroyJoint(this, sibling);
             }
         }
-        Debug.Log(count);
-        //var conn2 = GetCellGroup().MakeJoint(this, nucleus);
-        //conn2.distance = MembraneBalance.i.awaySpringDist;
-        //conn2.frequency = MembraneBalance.i.awaySpringFreq;
+        //foreach (SimplePart sibling in siblingsByDistance) {
+        //    if (Distance(sibling) < CellPartBalance.i.springMaxDist) {
+        //        SpringJoint2D conn = GetCellGroup().MakeJoint(this, sibling);
+        //        //conn.distance += 1f*(1 - Random.value*2);
+        //        //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
+        //        conn.distance = CellPartBalance.i.springDist;
+        //        conn.frequency = CellPartBalance.i.springFreq;
+        //    } else {
+        //        GetCellGroup().DestroyJoint(this, sibling);
+        //    }
+        //}
     }
 
     public override int JointDesire(SimplePart other) {

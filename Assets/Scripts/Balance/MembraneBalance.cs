@@ -12,6 +12,7 @@ public class MembraneBalance : MonoBehaviour {
     public float awaySpringFreq = .5f;
     public float immediateMaxDist = 3;
     public float awayMaxDist = 3;
+    public float straighteningForce = 1;
 
     MembraneBalance() {
         if (i == null) {
