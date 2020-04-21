@@ -17,8 +17,8 @@ public class Membrane : SimplePart {
 
         foreach (SimplePart sibling in siblingsByDistance) {
             if (sibling is Membrane m) {
-                SpringJoint2D conn = GetCellGroup().MakeJoint(this, m);
                 if (immediateConnections.Count < 2) {
+                    SpringJoint2D conn = GetCellGroup().MakeJoint(this, m);
                     // Prevents triangles
                     if (immediateConnections.Count == 1 &&
                         m.immediateConnections.Contains(immediateConnections[0])) {
@@ -28,11 +28,14 @@ public class Membrane : SimplePart {
                     conn.frequency = MembraneBalance.i.immediateSpringFreq;
                     immediateConnections.Add(m);
                 } else if (Distance(sibling) < MembraneBalance.i.awayMaxDist) {
+                    SpringJoint2D conn = GetCellGroup().MakeJoint(this, m);
                     conn.distance = MembraneBalance.i.awaySpringDist;
                     conn.frequency = MembraneBalance.i.awaySpringFreq;
+                } else {
+                    GetCellGroup().DestroyJoint(this, sibling);
                 }
             } else {
-                //GetCellGroup().DestroyJoint(this, sibling);
+                GetCellGroup().DestroyJoint(this, sibling);
             }
         }
         //foreach (SimplePart sibling in siblingsByDistance) {
