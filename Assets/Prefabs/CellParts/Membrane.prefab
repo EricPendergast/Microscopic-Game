@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f7eb3b4bd8a0b1b9079378d146f515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prev: {fileID: 0}
+  next: {fileID: 0}
+  nextJoint: {fileID: 0}
+  minLoopSize: 7
 --- !u!1001 &6282504669885928392
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27,7 +31,7 @@ PrefabInstance:
     - target: {fileID: 6789981924681045440, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}
       propertyPath: m_IsTrigger
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6789981924681045441, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}

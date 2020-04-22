@@ -62,9 +62,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   immediateSpringDist: 1
-  immediateSpringFreq: 1.01
+  immediateSpringFreq: 10
   awaySpringDist: 2.25
   awaySpringFreq: 1
-  immediateMaxDist: 0
+  immediateMaxDist: 3
   awayMaxDist: 2
   straighteningForce: 1

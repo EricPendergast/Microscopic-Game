@@ -4,65 +4,90 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 public class Membrane : SimplePart {
-    private Membrane left;
-    private Membrane right;
-    public float order;
-    
+    public Membrane prev = null;
+    public Membrane next = null;
+    public SpringJoint2D nextJoint = null;
+    public int minLoopSize = 5;
 
-    void Awake() {
-        order = Random.value;
+    new void Start() {
+        base.Start();
+        if (next == null) {
+            FindNext();
+        }
+    }
+
+    void OnJointBreak(float force) {
+        StartCoroutine(OnJointBreakCoroutine());
+    }
+
+    IEnumerator OnJointBreakCoroutine() {
+        yield return null;
+
+        if (nextJoint != null) {
+            Debug.Log("Unexpected joint broke in Membrane");
+            yield break;
+        }
+        // TODO: Do something like this
+        next.prev = null;
+        next = null;
+        Debug.Log("OnJointBreakCoroutine set next to [" + next + "] " + this.GetInstanceID());
+
+        FindNext();
+    }
+
+    void FindNext() {
+        Debug.Log("Call to FindNext " + this.GetInstanceID());
+        Assert.IsNull(nextJoint);
+        Assert.IsNull(next);
+
+        Membrane closest = null;
+        foreach (SimplePart sibling in GetSiblings()) {
+            if (sibling is Membrane m) {
+                if (closest == null || Distance(m) < Distance(closest)) {
+                    if (m.prev == null && !m.GetNexts(minLoopSize).Contains(this)) {
+                        closest = m;
+                    }
+                }
+            }
+        }
+
+        if (closest != null && Distance(closest) < MembraneBalance.i.immediateMaxDist) {
+            ConnectTo(closest);
+        }
+    }
+
+    private void ConnectTo(Membrane newNext) {
+        next = newNext;
+        Debug.Log("ConnectTo set next to [" + next + "] " + this.GetInstanceID());
+        Assert.IsNull(next.prev);
+        next.prev = this;
+
+        nextJoint = gameObject.AddComponent<SpringJoint2D>();
+        Debug.Log("ConnectTo set nextJoint to [" + nextJoint + "] " + this.GetInstanceID());
+        nextJoint.connectedBody = next.GetComponent<Rigidbody2D>();
+        nextJoint.distance = MembraneBalance.i.immediateSpringDist;
+        nextJoint.frequency = MembraneBalance.i.immediateSpringFreq;
+        nextJoint.autoConfigureDistance = false;
+    }
+
+    List<Membrane> GetNexts(int numNext) {
+        if (nextJoint == null || numNext == 0) {
+            return new List<Membrane>();
+        } else {
+            Membrane n = nextJoint.connectedBody.GetComponent<Membrane>();
+            List<Membrane> l = n.GetNexts(numNext - 1);
+            l.Add(n);
+            return l;
+        }
     }
 
     public override void UpdateSprings() {
-        // The set of all membranes
-        var siblings = new List<Membrane>();
-        foreach (SimplePart sibling in GetAll()) {
-            if (sibling is Membrane m) {
-                siblings.Add(m);
-            }
-        }
-
-        int siz = 3;
-        if (siblings.Count < siz*2 + 1) {
-            return;
-        }
-
-        siblings.Sort(delegate(Membrane m1, Membrane m2) {
-            return m1.order > m2.order ? 1 : -1;
-        });
-
-        int me = 0;
-        for (me = 0; me < siblings.Count; me++) {
-            if (siblings[me] == this) {
-                break;
-            }
-        }
-
-        // TODO
-        foreach (var joint in GetComponents<RelativeJoint2D>()) {
-            if (joint.connectedBody.gameObject.GetComponent<Membrane>() != null) {
-                Destroy(joint);
-            }
-        }
-
-        for (int j = -siz; j <= siz; j++) {
-            if (j == 0) {
-                continue;
-            }
-            Membrane nearSib = siblings[(me+j+siblings.Count)%siblings.Count];
-
-            var joint = gameObject.AddComponent<RelativeJoint2D>();
-            joint.connectedBody = nearSib.GetComponent<Rigidbody2D>();
-            joint.linearOffset = new Vector2(1, 0) * MembraneBalance.i.immediateSpringDist * j;
-            joint.autoConfigureOffset = false;
-            joint.maxForce = MembraneBalance.i.immediateSpringFreq/Mathf.Abs(j);
-            joint.maxTorque = 0;
-            joint.enableCollision = true;
-            //var conn = GetCellGroup().MakeJoint(this, nearSib);
+        if (next == null) {
+            FindNext();
         }
     }
 
     public override float JointDesire(SimplePart other) {
-        return 1+order;
+        return -1;
     }
 }
