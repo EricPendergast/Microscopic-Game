@@ -82,7 +82,7 @@ public class SimplePart : MonoBehaviour {
 
     // Returns an integer representing how much this cell part wants to control
     // the joint from it to the other cell part
-    public virtual int JointDesire(SimplePart other) {
+    public virtual float JointDesire(SimplePart other) {
         return 0;
     }
 

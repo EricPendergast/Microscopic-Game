@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 public class Membrane : SimplePart {
     private Membrane left;
     private Membrane right;
-    private float order;
+    public float order;
     
 
     void Awake() {
@@ -14,33 +14,55 @@ public class Membrane : SimplePart {
     }
 
     public override void UpdateSprings() {
-        //Assert.AreEqual(left == null, right == null);
-        //if (left != null) {
-            //return;
-        //}
-        //base.UpdateSprings();
         // The set of all membranes
-        Nucleus nucleus = null;
+        var siblings = new List<Membrane>();
         foreach (SimplePart sibling in GetAll()) {
-            if (sibling is Nucleus n) {
-                nucleus = n;
+            if (sibling is Membrane m) {
+                siblings.Add(m);
             }
         }
 
-        RelativeJoint2D conn = gameObject.GetComponent<RelativeJoint2D>();
-        if (conn == null) {
-            conn = gameObject.AddComponent<RelativeJoint2D>();
+        int siz = 3;
+        if (siblings.Count < siz*2 + 1) {
+            return;
         }
-        conn.connectedBody = nucleus.GetComponent<Rigidbody2D>();
-        conn.linearOffset = new Vector2(Mathf.Cos(order*6.28f), Mathf.Sin(order*6.28f))*MembraneBalance.i.awaySpringDist;
-        conn.maxForce = 20;
-        conn.autoConfigureOffset = false;
-        //conn.distance = MembraneBalance.i.immediateSpringDist*difference;
-        //conn.frequency = MembraneBalance.i.immediateSpringFreq*difference;
-        //conn.maxForce = MembraneBalance
+
+        siblings.Sort(delegate(Membrane m1, Membrane m2) {
+            return m1.order > m2.order ? 1 : -1;
+        });
+
+        int me = 0;
+        for (me = 0; me < siblings.Count; me++) {
+            if (siblings[me] == this) {
+                break;
+            }
+        }
+
+        // TODO
+        foreach (var joint in GetComponents<RelativeJoint2D>()) {
+            if (joint.connectedBody.gameObject.GetComponent<Membrane>() != null) {
+                Destroy(joint);
+            }
+        }
+
+        for (int j = -siz; j <= siz; j++) {
+            if (j == 0) {
+                continue;
+            }
+            Membrane nearSib = siblings[(me+j+siblings.Count)%siblings.Count];
+
+            var joint = gameObject.AddComponent<RelativeJoint2D>();
+            joint.connectedBody = nearSib.GetComponent<Rigidbody2D>();
+            joint.linearOffset = new Vector2(1, 0) * MembraneBalance.i.immediateSpringDist * j;
+            joint.autoConfigureOffset = false;
+            joint.maxForce = MembraneBalance.i.immediateSpringFreq/Mathf.Abs(j);
+            joint.maxTorque = 0;
+            joint.enableCollision = true;
+            //var conn = GetCellGroup().MakeJoint(this, nearSib);
+        }
     }
 
-    public override int JointDesire(SimplePart other) {
-        return 1;
+    public override float JointDesire(SimplePart other) {
+        return 1+order;
     }
 }
