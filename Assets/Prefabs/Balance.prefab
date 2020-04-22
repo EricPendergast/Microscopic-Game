@@ -47,6 +47,7 @@ MonoBehaviour:
   friction: 0.99
   springDist: 1.5
   springFreq: 1.5
+  springBreakForce: 100
   springMaxDist: 2
   springUpdateTime: 1
 --- !u!114 &375456342767243175
@@ -63,6 +64,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   immediateSpringDist: 1
   immediateSpringFreq: 10
+  immediateSpringBreakForce: Infinity
   awaySpringDist: 2.25
   awaySpringFreq: 1
   immediateMaxDist: 3

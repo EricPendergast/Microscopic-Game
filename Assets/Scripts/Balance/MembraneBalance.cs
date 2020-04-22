@@ -8,11 +8,19 @@ public class MembraneBalance : MonoBehaviour {
     //public float friction = .99f;
     public float immediateSpringDist = 1f;
     public float immediateSpringFreq = 1;
+    public float immediateSpringBreakForce = 1;
     public float awaySpringDist = 3f;
     public float awaySpringFreq = .5f;
     public float immediateMaxDist = 3;
     public float awayMaxDist = 3;
     public float straighteningForce = 1;
+
+    public static void ConfigureJointConstants(SpringJoint2D joint) {
+        joint.distance = MembraneBalance.i.immediateSpringDist;
+        joint.frequency = MembraneBalance.i.immediateSpringFreq;
+        joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
+        joint.autoConfigureDistance = false;
+    }
 
     MembraneBalance() {
         if (i == null) {

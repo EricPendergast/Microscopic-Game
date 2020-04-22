@@ -60,19 +60,16 @@ public class SimplePart : MonoBehaviour {
     }
 
     public virtual void UpdateSprings() {
-        int count = 0;
-        foreach (SimplePart sibling in GetSiblings()) {
-            if (Distance(sibling) < CellPartBalance.i.springMaxDist) {
-                if (count++ > 6)
-                    return;
-                SpringJoint2D conn = cellGroup.MakeJoint(this, sibling);
-                //conn.distance += 1f*(1 - Random.value*2);
-                //conn.distance = Mathf.Clamp(conn.distance, .5f, 3);
-                conn.distance = CellPartBalance.i.springDist;
-                conn.frequency = CellPartBalance.i.springFreq;
-            } else {
-                cellGroup.DestroyJoint(this, sibling);
+        foreach (SimplePart sibling in GetCellGroup().GetNearby(this, CellPartBalance.i.springMaxDist)) {
+            if (sibling == this) {
+                continue;
             }
+            SpringJoint2D joint = cellGroup.MakeJoint(this, sibling);
+            CellPartBalance.ConfigureJointConstants(joint);
+        }
+
+        foreach (var joint in GetComponents<SpringJoint2D>()) {
+            CellPartBalance.ConfigureJointConstants(joint);
         }
     }
 
@@ -86,34 +83,26 @@ public class SimplePart : MonoBehaviour {
         return 0;
     }
 
-    public List<SimplePart> GetSiblings() {
-        var siblings = new List<SimplePart>();
+    public List<SimplePart> GetNearby(float distance) {
         if (GetCellGroup() == null) {
-            return siblings;
+            return new List<SimplePart>();
+        } else {
+            return GetCellGroup().GetNearby(this, distance);
         }
-
-        foreach (SimplePart sibling in GetCellGroup().GetCellParts()) {
-            if (sibling == this) {
-                continue;
-            }
-            siblings.Add(sibling);
-        }
-        
-        return siblings;
     }
 
-    public List<SimplePart> GetAll() {
-        var siblings = new List<SimplePart>();
-        if (GetCellGroup() == null) {
-            return siblings;
-        }
-
-        foreach (SimplePart sibling in GetCellGroup().GetCellParts()) {
-            siblings.Add(sibling);
-        }
-        
-        return siblings;
-    }
+    //public List<SimplePart> GetAll() {
+    //    var siblings = new List<SimplePart>();
+    //    if (GetCellGroup() == null) {
+    //        return siblings;
+    //    }
+    //
+    //    foreach (SimplePart sibling in GetCellGroup().GetCellParts()) {
+    //        siblings.Add(sibling);
+    //    }
+    //    
+    //    return siblings;
+    //}
 
     public float Distance(SimplePart sp1) {
         return (transform.position - sp1.transform.position).magnitude;

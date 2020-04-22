@@ -43,6 +43,23 @@ public class CellGroup : MonoBehaviour {
         return com/count;
     }
 
+    // TODO: See if I can make this generic, to get all nearby cells of a
+    // certain type.
+    public List<SimplePart> GetNearby(SimplePart part, float radius) {
+        List<SimplePart> nearby = new List<SimplePart>();
+
+        foreach (Collider2D rb in Physics2D.OverlapCircleAll(part.transform.position, radius)) {
+            if (rb.gameObject.TryGetComponent<SimplePart>(out SimplePart sp)) {
+                // TODO: There are multiple valid ways to do this (should there be an "== this"?)
+                if (sp.GetCellGroup() == part.GetCellGroup()) {
+                    nearby.Add(sp);
+                }
+            }
+        }
+
+        return nearby;
+    }
+
     public List<SimplePart> GetCellParts() {
         List<SimplePart> all = new List<SimplePart>();
         

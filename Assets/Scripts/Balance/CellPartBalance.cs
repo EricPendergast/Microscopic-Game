@@ -8,8 +8,16 @@ public class CellPartBalance : MonoBehaviour {
     public float friction = .99f;
     public float springDist = 1.5f;
     public float springFreq = 1;
+    public float springBreakForce = 10;
     public float springMaxDist = 1;
     public float springUpdateTime = 1;
+
+    public static void ConfigureJointConstants(SpringJoint2D joint) {
+        joint.distance = CellPartBalance.i.springDist;
+        joint.frequency = CellPartBalance.i.springFreq;
+        joint.breakForce = CellPartBalance.i.springBreakForce;
+        joint.autoConfigureDistance = false;
+    }
 
     CellPartBalance() {
         if (i == null) {

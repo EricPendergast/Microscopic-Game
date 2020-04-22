@@ -41,8 +41,8 @@ public class Membrane : SimplePart {
         Assert.IsNull(next);
 
         Membrane closest = null;
-        foreach (SimplePart sibling in GetSiblings()) {
-            if (sibling is Membrane m) {
+        foreach (SimplePart sibling in GetNearby(MembraneBalance.i.immediateMaxDist)) {
+            if (sibling != this && sibling is Membrane m) {
                 if (closest == null || Distance(m) < Distance(closest)) {
                     if (m.prev == null && !m.GetNexts(minLoopSize).Contains(this)) {
                         closest = m;
@@ -51,7 +51,7 @@ public class Membrane : SimplePart {
             }
         }
 
-        if (closest != null && Distance(closest) < MembraneBalance.i.immediateMaxDist) {
+        if (closest != null) {
             ConnectTo(closest);
         }
     }
@@ -65,9 +65,7 @@ public class Membrane : SimplePart {
         nextJoint = gameObject.AddComponent<SpringJoint2D>();
         Debug.Log("ConnectTo set nextJoint to [" + nextJoint + "] " + this.GetInstanceID());
         nextJoint.connectedBody = next.GetComponent<Rigidbody2D>();
-        nextJoint.distance = MembraneBalance.i.immediateSpringDist;
-        nextJoint.frequency = MembraneBalance.i.immediateSpringFreq;
-        nextJoint.autoConfigureDistance = false;
+        MembraneBalance.ConfigureJointConstants(nextJoint);
     }
 
     List<Membrane> GetNexts(int numNext) {
@@ -84,6 +82,8 @@ public class Membrane : SimplePart {
     public override void UpdateSprings() {
         if (next == null) {
             FindNext();
+        } else {
+            MembraneBalance.ConfigureJointConstants(nextJoint);
         }
     }
 
