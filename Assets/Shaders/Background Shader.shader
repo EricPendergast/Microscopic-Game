@@ -8,8 +8,10 @@ Shader "Unlit/Background Shader"
         diameter ("Ring diameters", Float) = 1
         thickness ("Ring thicknesses", Float) = .1
         scale ("Overall scale", Float) = 1
+        layerTwoSpeed ("Layer Two Speed", float) = 1.5
         checkDistance ("Check distance", Int) = 2
         ringColor ("Color", Color) = (1,1,1,1)
+        cameraPosition ("Camera Position", Vector) = (0,0,0,0)
     }
     SubShader
     {
@@ -50,6 +52,8 @@ Shader "Unlit/Background Shader"
             float scale;
             float4 ringColor;
             float sh;
+            float4 cameraPosition;
+            float layerTwoSpeed;
 
             v2f vert (appdata v)
             {
@@ -110,7 +114,9 @@ Shader "Unlit/Background Shader"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                return getCircleNoise(i.world_position.xy/scale) * ringColor;
+                float circNoise1 = getCircleNoise(i.world_position.xy/scale);
+                float circNoise2 = getCircleNoise((i.world_position.xy + cameraPosition*layerTwoSpeed)/(2*scale));
+                return sqrt(circNoise1*circNoise1 + circNoise2*circNoise2) * ringColor;
                 // return float4(abs(i.world_position.x)%1,1,0,1);
             }
 
