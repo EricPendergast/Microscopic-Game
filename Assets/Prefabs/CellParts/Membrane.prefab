@@ -53,6 +53,16 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 0.004227493
       objectReference: {fileID: 0}
+    - target: {fileID: 6789981924681045442, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_UseAutoMass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789981924681045442, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Mass
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6789981924681045443, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -122,6 +132,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Membrane
+      objectReference: {fileID: 0}
+    - target: {fileID: 6789981924681045444, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3998049277265290056, guid: bbe8d166b34374d3e9c9f099dcfe5769, type: 3}

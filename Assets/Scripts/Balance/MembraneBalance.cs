@@ -20,6 +20,7 @@ public class MembraneBalance : MonoBehaviour {
         joint.frequency = MembraneBalance.i.immediateSpringFreq;
         joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
         joint.autoConfigureDistance = false;
+        joint.enableCollision = true;
     }
 
     MembraneBalance() {

@@ -9,6 +9,8 @@ public class Membrane : SimplePart {
     public SpringJoint2D nextJoint = null;
     public int minLoopSize = 5;
 
+    MembraneDrawer drawer = null;
+
     new void Start() {
         base.Start();
         if (next == null) {
@@ -18,6 +20,28 @@ public class Membrane : SimplePart {
 
     void OnJointBreak(float force) {
         StartCoroutine(OnJointBreakCoroutine());
+    }
+
+    new void OnMouseOver() {
+        base.OnMouseOver();
+        if (Input.GetMouseButtonDown(1)) {
+            drawer = new MembraneDrawer(this);
+            StartCoroutine(DraggingCoroutine());
+        }
+    }
+
+    new void OnMouseUp() {
+        base.OnMouseUp();
+        if (Input.GetMouseButtonUp(1)) {
+            drawer = null;
+        }
+    }
+
+    IEnumerator DraggingCoroutine() {
+        while (Input.GetMouseButton(1) && drawer != null) {
+            drawer.DoDraw();
+            yield return null;
+        }
     }
 
     IEnumerator OnJointBreakCoroutine() {
@@ -30,13 +54,13 @@ public class Membrane : SimplePart {
         // TODO: Do something like this
         next.prev = null;
         next = null;
-        Debug.Log("OnJointBreakCoroutine set next to [" + next + "] " + this.GetInstanceID());
+        //Debug.Log("OnJointBreakCoroutine set next to [" + next + "] " + this.GetInstanceID());
 
         FindNext();
     }
 
     void FindNext() {
-        Debug.Log("Call to FindNext " + this.GetInstanceID());
+        //Debug.Log("Call to FindNext " + this.GetInstanceID());
         Assert.IsNull(nextJoint);
         Assert.IsNull(next);
 
@@ -56,14 +80,14 @@ public class Membrane : SimplePart {
         }
     }
 
-    private void ConnectTo(Membrane newNext) {
+    public void ConnectTo(Membrane newNext) {
         next = newNext;
-        Debug.Log("ConnectTo set next to [" + next + "] " + this.GetInstanceID());
+        //Debug.Log("ConnectTo set next to [" + next + "] " + this.GetInstanceID());
         Assert.IsNull(next.prev);
         next.prev = this;
 
         nextJoint = gameObject.AddComponent<SpringJoint2D>();
-        Debug.Log("ConnectTo set nextJoint to [" + nextJoint + "] " + this.GetInstanceID());
+        //Debug.Log("ConnectTo set nextJoint to [" + nextJoint + "] " + this.GetInstanceID());
         nextJoint.connectedBody = next.GetComponent<Rigidbody2D>();
         MembraneBalance.ConfigureJointConstants(nextJoint);
     }
@@ -88,6 +112,6 @@ public class Membrane : SimplePart {
     }
 
     public override float JointDesire(SimplePart other) {
-        return -1;
+        return 2;
     }
 }

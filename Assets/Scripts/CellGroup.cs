@@ -120,7 +120,7 @@ public class CellGroup : MonoBehaviour {
     }
 
     public SimplePart WhoControlsJoint(SimplePart sp1, SimplePart sp2) {
-        if (sp1.JointDesire(sp2) > sp2.JointDesire(sp1)) {
+        if (sp1.JointDesire(sp2) >= sp2.JointDesire(sp1)) {
             return sp1;
         } else {
             return sp2;

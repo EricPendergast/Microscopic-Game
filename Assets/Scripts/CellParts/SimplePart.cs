@@ -8,8 +8,9 @@ public class SimplePart : MonoBehaviour {
     //public List<SpringJoint2D> joints;
     
     public void OnMouseUp() {
-        Debug.Log("Released");
-        Destroy(GetComponent<TargetJoint2D>());
+        if (Input.GetMouseButtonUp(0)) {
+            Destroy(GetComponent<TargetJoint2D>());
+        }
     }
 
     public void OnMouseOver() {
@@ -17,12 +18,14 @@ public class SimplePart : MonoBehaviour {
     }
 
     public void OnMouseDrag() {
-        //Mouse.OnMouseDragCellPart(this);
-        var mouseSpring = GetComponent<TargetJoint2D>();
-        if (mouseSpring == null) {
-            mouseSpring = gameObject.AddComponent<TargetJoint2D>();
+        if (Input.GetMouseButton(0)) {
+            //Mouse.OnMouseDragCellPart(this);
+            var mouseSpring = GetComponent<TargetJoint2D>();
+            if (mouseSpring == null) {
+                mouseSpring = gameObject.AddComponent<TargetJoint2D>();
+            }
+            mouseSpring.target = Mouse.WorldPosition();
         }
-        mouseSpring.target = Mouse.WorldPosition();
     }
 
     public void Start() {
@@ -61,7 +64,7 @@ public class SimplePart : MonoBehaviour {
 
     public virtual void UpdateSprings() {
         foreach (SimplePart sibling in GetCellGroup().GetNearby(this, CellPartBalance.i.springMaxDist)) {
-            if (sibling == this) {
+            if (sibling == this || this != GetCellGroup().WhoControlsJoint(this, sibling)) {
                 continue;
             }
             SpringJoint2D joint = cellGroup.MakeJoint(this, sibling);
@@ -69,7 +72,9 @@ public class SimplePart : MonoBehaviour {
         }
 
         foreach (var joint in GetComponents<SpringJoint2D>()) {
-            CellPartBalance.ConfigureJointConstants(joint);
+            if (this == GetCellGroup().WhoControlsJoint(this, joint.connectedBody.GetComponent<SimplePart>())) {
+                CellPartBalance.ConfigureJointConstants(joint);
+            }
         }
     }
 

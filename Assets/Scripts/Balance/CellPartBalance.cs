@@ -17,6 +17,7 @@ public class CellPartBalance : MonoBehaviour {
         joint.frequency = CellPartBalance.i.springFreq;
         joint.breakForce = CellPartBalance.i.springBreakForce;
         joint.autoConfigureDistance = false;
+        joint.enableCollision = true;
     }
 
     CellPartBalance() {
