@@ -15,7 +15,7 @@ public class Mouth : SimplePart {
     //
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.TryGetComponent(out SimplePart part)) {
-            part.SetParent(GetCellGroup());
+            part.transform.parent = GetCellGroup().transform;
         }
     }
 }

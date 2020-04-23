@@ -5,7 +5,6 @@ using UnityEngine;
 public class SimplePart : MonoBehaviour {
     protected Rigidbody2D body;
     private CellGroup cellGroup = null;
-    //public List<SpringJoint2D> joints;
     
     public void OnMouseUp() {
         if (Input.GetMouseButtonUp(0)) {
@@ -30,22 +29,11 @@ public class SimplePart : MonoBehaviour {
 
     public void Start() {
         body = GetComponent<Rigidbody2D>();
-        SetParent(transform.parent.GetComponent<CellGroup>());
+        OnTransformParentChanged();
         StartCoroutine(UpdateSpringsCoroutine());
     }
 
-    // TODO: This can get called by the event OnTransformParentChanged
-    // Always use this to change parents
-    public void SetParent(CellGroup newCellGroup) {
-        if (newCellGroup == cellGroup) {
-            return;
-        }
-        if (cellGroup != null) {
-            foreach (SimplePart sibling in cellGroup.GetCellParts()) {
-                cellGroup.DestroyJoint(this, sibling);
-            }
-        }
-        transform.SetParent(newCellGroup.transform);
+    public void OnTransformParentChanged() {
         cellGroup = transform.parent.GetComponent<CellGroup>();
 
         UpdateSprings();
@@ -63,18 +51,12 @@ public class SimplePart : MonoBehaviour {
     }
 
     public virtual void UpdateSprings() {
-        foreach (SimplePart sibling in GetCellGroup().GetNearby(this, CellPartBalance.i.springMaxDist)) {
-            if (sibling == this || this != GetCellGroup().WhoControlsJoint(this, sibling)) {
-                continue;
-            }
-            SpringJoint2D joint = cellGroup.MakeJoint(this, sibling);
-            CellPartBalance.ConfigureJointConstants(joint);
+        foreach (SimplePart sibling in GetNearby(CellPartBalance.i.springMaxDist)) {
+            JointWrapper joint = GetCellGroup().MakeJoint(this, sibling);
         }
 
-        foreach (var joint in GetComponents<SpringJoint2D>()) {
-            if (this == GetCellGroup().WhoControlsJoint(this, joint.connectedBody.GetComponent<SimplePart>())) {
-                CellPartBalance.ConfigureJointConstants(joint);
-            }
+        foreach (var joint in GetComponents<JointWrapper>()) {
+            joint.Reconfigure();
         }
     }
 
@@ -95,19 +77,6 @@ public class SimplePart : MonoBehaviour {
             return GetCellGroup().GetNearby(this, distance);
         }
     }
-
-    //public List<SimplePart> GetAll() {
-    //    var siblings = new List<SimplePart>();
-    //    if (GetCellGroup() == null) {
-    //        return siblings;
-    //    }
-    //
-    //    foreach (SimplePart sibling in GetCellGroup().GetCellParts()) {
-    //        siblings.Add(sibling);
-    //    }
-    //    
-    //    return siblings;
-    //}
 
     public float Distance(SimplePart sp1) {
         return (transform.position - sp1.transform.position).magnitude;

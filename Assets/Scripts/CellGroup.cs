@@ -73,15 +73,19 @@ public class CellGroup : MonoBehaviour {
         return all;
     }
 
-    public SpringJoint2D MakeJoint(SimplePart sp1, SimplePart sp2) {
-        Assert.AreNotEqual(sp1, sp2, "Joints must be between two different cell parts");
+    public JointWrapper MakeJoint(SimplePart sp1, SimplePart sp2) {
+        if (sp1 == sp2) {
+            return null;
+        }
         var joint = GetJoint(sp1, sp2);
         if (joint != null) {
             return joint;
+        } else if (sp1 != WhoControlsJoint(sp1, sp2)) {
+            return null;
         }
 
-        joint = sp1.gameObject.AddComponent<SpringJoint2D>();
-        joint.connectedBody = sp2.gameObject.GetComponent<Rigidbody2D>();
+        joint = sp1.gameObject.AddComponent<JointWrapper>();
+        joint.SetConnected(sp2);
         
         return joint;
     }
@@ -97,22 +101,10 @@ public class CellGroup : MonoBehaviour {
         }
     }
 
-    // Finds the joint shared with sp1 and sp2
-    public SpringJoint2D GetJoint(SimplePart sp1, SimplePart sp2) {
-        SpringJoint2D joint12 = GetJointHelper(sp1, sp2);
-        SpringJoint2D joint21 = GetJointHelper(sp2, sp1);
-        Assert.IsTrue(joint12 == null || joint21 == null, "Spring should only go one direction");
-        if (joint12 != null) {
-            return joint12;
-        } else {
-            return joint21;
-        }
-    }
-
-    // Finds the joint going from sp1 to sp2
-    private SpringJoint2D GetJointHelper(SimplePart sp1, SimplePart sp2) {
-        foreach (SpringJoint2D joint in sp1.GetComponents<SpringJoint2D>()) {
-            if (joint.connectedBody.gameObject.GetComponent<SimplePart>() == sp2) {
+    // Finds the joint from sp1 to sp2
+    public JointWrapper GetJoint(SimplePart sp1, SimplePart sp2) {
+        foreach (var joint in sp1.GetComponents<JointWrapper>()) {
+            if (joint.GetConnected() == sp2) {
                 return joint;
             }
         }

@@ -7,4 +7,48 @@ General idea:
         do this because there is day and night
         at night bad things happen?
 
+    you want to divide?
+        need to think of some sort of motivation for this.
+        Dividing gives you an extra life?
+
+    each cell part is like an organelle
+        mitochondria
+        flagella
+        nucleus
+        grabber thingy
+        digester thingy
+        oxygen?
+        anaeroboc?
+        stabilizer: keeps nearby cell parts in place
+        toxin pump
+
+        membrane
+        chloroplasts
+        mitochondria
+
+    somehow disincentivise being too large
+    you can take parts from other cells
+
+    bad guys:
+        Amoebas
+        stentors
+        multicellular life??
+        bacteria: take cell parts, produce toxins?
+
+    Membrane functoinality:
+        should be 1 layer thick
+
+    Cytoskeleton can hold the structure, but it doesn't block anything
+
+
+
+Visuals:
+    Floaty specks
+    perlin noise background, with finer-grained perlin noise moving at a different rate on top of it (like clouds)
+
+    step 1 get perlin noise working
+
+    step 2 get regularly spaced specks
+
+
 

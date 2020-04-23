@@ -1,0 +1,16 @@
+
+How should joints work?
+Right now they are raw SpringJoint2D, etc on game objects.
+This is problematic, because anyone can do anything with their joints.
+There is a general idea that each joint has one cell part which controlls it,
+    but that is hard to enforce in practice.
+
+There is also the problem of joint rendering. How would you do this without
+duplicating rendering code in every cellpart subclass?
+
+Idea:
+    Instead of making a joint, you make a JointWrapper, which controls a joint.
+    JointWrapper has callbacks like OnBreak
+    JointWrapper also controls rendering
+    Cleans itself up when it breaks
+    It will have subclasses which do more and more specific things
