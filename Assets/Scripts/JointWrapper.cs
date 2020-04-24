@@ -46,7 +46,6 @@ public class JointWrapper : MonoBehaviour {
     //}
     
     void OnJointBreak2D(Joint2D broken) {
-        Debug.Log("Joint broke part 1 [" + joint + "]");
         if (joint != broken) {
             return;
         }

@@ -8,6 +8,7 @@ public class CellGroup : MonoBehaviour {
     public bool addFlagella = false;
     public bool addLump = false;
     public bool addMembrane = false;
+    public bool addCytoskeleton = false;
 
     public bool isPlayer = false;
 
@@ -28,6 +29,10 @@ public class CellGroup : MonoBehaviour {
             addMembrane = false;
             GameObject.Instantiate(Refs.inst.membrane, transform).transform.position = com;
         }
+        if (addCytoskeleton) {
+            addCytoskeleton = false;
+            GameObject.Instantiate(Refs.inst.cytoskeleton, transform).transform.position = com;
+        }
     }
 
     public Vector3 CalculateCenterOfMass() {
@@ -36,6 +41,9 @@ public class CellGroup : MonoBehaviour {
         int count = 0;
 
         foreach (SimplePart sp in GetCellParts()) {
+            if (sp is Nucleus) {
+                return sp.transform.position + new Vector3(1,0,0);
+            }
             com += sp.transform.position;
             count++;
         }

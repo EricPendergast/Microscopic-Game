@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Mouse {
-    //public static SimplePart currentlySelected;
-    public static SimplePart currentlyOver;
+    public static SimplePart currentlySelected = null;
+    public static SimplePart currentlyOver = null;
 
     public static Vector2 WorldPosition() {
        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
