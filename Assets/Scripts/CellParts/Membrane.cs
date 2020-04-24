@@ -5,21 +5,17 @@ using UnityEngine.Assertions;
 
 public class Membrane : SimplePart {
     public Membrane prev = null;
-    public Membrane next = null;
-    public SpringJoint2D nextJoint = null;
+    public JointWrapper nextJoint = null;
+
     public int minLoopSize = 5;
 
     MembraneDrawer drawer = null;
 
     new void Start() {
         base.Start();
-        if (next == null) {
+        if (nextJoint == null) {
             FindNext();
         }
-    }
-
-    void OnJointBreak(float force) {
-        StartCoroutine(OnJointBreakCoroutine());
     }
 
     new void OnMouseOver() {
@@ -37,6 +33,15 @@ public class Membrane : SimplePart {
         }
     }
 
+    public override void OnConnectedTo(JointWrapper joint) {
+        if (joint.GetSource() is Membrane m) {
+            prev = m;
+            joint.onBreak.AddListener(() => {
+                prev = null;
+            });
+        }
+    }
+
     IEnumerator DraggingCoroutine() {
         while (Input.GetMouseButton(1) && drawer != null) {
             drawer.DoDraw();
@@ -44,25 +49,8 @@ public class Membrane : SimplePart {
         }
     }
 
-    IEnumerator OnJointBreakCoroutine() {
-        yield return null;
-
-        if (nextJoint != null) {
-            Debug.Log("Unexpected joint broke in Membrane");
-            yield break;
-        }
-        // TODO: Do something like this
-        next.prev = null;
-        next = null;
-        //Debug.Log("OnJointBreakCoroutine set next to [" + next + "] " + this.GetInstanceID());
-
-        FindNext();
-    }
-
     void FindNext() {
-        //Debug.Log("Call to FindNext " + this.GetInstanceID());
         Assert.IsNull(nextJoint);
-        Assert.IsNull(next);
 
         Membrane closest = null;
         foreach (SimplePart sibling in GetNearby(MembraneBalance.i.immediateMaxDist)) {
@@ -81,22 +69,19 @@ public class Membrane : SimplePart {
     }
 
     public void ConnectTo(Membrane newNext) {
-        next = newNext;
-        //Debug.Log("ConnectTo set next to [" + next + "] " + this.GetInstanceID());
-        Assert.IsNull(next.prev);
-        next.prev = this;
+        Assert.IsNull(newNext.prev);
 
-        nextJoint = gameObject.AddComponent<SpringJoint2D>();
-        //Debug.Log("ConnectTo set nextJoint to [" + nextJoint + "] " + this.GetInstanceID());
-        nextJoint.connectedBody = next.GetComponent<Rigidbody2D>();
-        MembraneBalance.ConfigureJointConstants(nextJoint);
+        nextJoint = GetCellGroup().MakeJoint(this, newNext);
+        Assert.IsNotNull(nextJoint);
+
+        MembraneBalance.ConfigureJointConstants(nextJoint.joint);
     }
 
     List<Membrane> GetNexts(int numNext) {
         if (nextJoint == null || numNext == 0) {
             return new List<Membrane>();
         } else {
-            Membrane n = nextJoint.connectedBody.GetComponent<Membrane>();
+            Membrane n = nextJoint.GetConnected() as Membrane;
             List<Membrane> l = n.GetNexts(numNext - 1);
             l.Add(n);
             return l;
@@ -104,10 +89,10 @@ public class Membrane : SimplePart {
     }
 
     public override void UpdateSprings() {
-        if (next == null) {
+        if (nextJoint == null) {
             FindNext();
         } else {
-            MembraneBalance.ConfigureJointConstants(nextJoint);
+            MembraneBalance.ConfigureJointConstants(nextJoint.joint);
         }
     }
 

@@ -39,6 +39,8 @@ public class SimplePart : MonoBehaviour {
         UpdateSprings();
     }
 
+    public virtual void OnConnectedTo(JointWrapper joint) {}
+
     public CellGroup GetCellGroup() {
         return cellGroup;
     }

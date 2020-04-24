@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class JointWrapper : MonoBehaviour {
     public UnityEvent onBreak;
 
-    private SpringJoint2D joint;
+    public SpringJoint2D joint;
     private SimplePart attachedCellPart;
     
     void Awake() {
@@ -19,6 +19,7 @@ public class JointWrapper : MonoBehaviour {
 
     public void SetConnected(SimplePart other) {
         Assert.IsNull(joint.connectedBody);
+        other.OnConnectedTo(this);
         joint.connectedBody = other.GetComponent<Rigidbody2D>();
     }
 
@@ -28,6 +29,10 @@ public class JointWrapper : MonoBehaviour {
         } else {
             return joint.connectedBody.GetComponent<SimplePart>();
         }
+    }
+
+    public SimplePart GetSource() {
+        return attachedCellPart;
     }
 
     public void Reconfigure() {

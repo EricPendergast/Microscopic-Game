@@ -8,7 +8,7 @@ class MembraneDrawer {
     }
 
     public void DoDraw() {
-        if (current == null || current.next != null) {
+        if (current == null || current.nextJoint != null) {
             return;
         }
         var difference = Mouse.WorldPosition() - (Vector2)current.transform.position;
