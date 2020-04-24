@@ -20,16 +20,9 @@ public class Membrane : SimplePart {
 
     new void OnMouseOver() {
         base.OnMouseOver();
-        if (Input.GetMouseButtonDown(1)) {
+        if (Mouse.RightMouseDown()) {
             drawer = new MembraneDrawer(this);
             StartCoroutine(DraggingCoroutine());
-        }
-    }
-
-    new void OnMouseUp() {
-        base.OnMouseUp();
-        if (Input.GetMouseButtonUp(1)) {
-            drawer = null;
         }
     }
 
@@ -43,7 +36,7 @@ public class Membrane : SimplePart {
     }
 
     IEnumerator DraggingCoroutine() {
-        while (Input.GetMouseButton(1) && drawer != null) {
+        while (Mouse.RightMouse() && drawer != null) {
             drawer.DoDraw();
             yield return null;
         }

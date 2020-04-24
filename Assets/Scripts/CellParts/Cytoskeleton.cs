@@ -20,12 +20,12 @@ public class Cytoskeleton : SimplePart {
         }
     }
 
-    new void OnMouseDrag() {
-        //Debug.Log("Cytoskeleton mouse up");
-        //Mouse.OnMouseDragCellPart(this);
-    }
+    new void OnMouseOver() {
+        base.OnMouseOver();
+        if (Mouse.LeftMouseDown()) {
 
-    //new void 
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D collision) {
         //if (collision.gameObject.TryGetComponent(out SimplePart part)) {

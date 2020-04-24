@@ -7,7 +7,7 @@ public class SimplePart : MonoBehaviour {
     private CellGroup cellGroup = null;
     
     public void OnMouseUp() {
-        if (Input.GetMouseButtonUp(0)) {
+        if (Mouse.LeftMouseUp()) {
             Destroy(GetComponent<TargetJoint2D>());
         }
     }
@@ -17,7 +17,7 @@ public class SimplePart : MonoBehaviour {
     }
 
     public void OnMouseDrag() {
-        if (Input.GetMouseButton(0)) {
+        if (Mouse.LeftMouse()) {
             //Mouse.OnMouseDragCellPart(this);
             var mouseSpring = GetComponent<TargetJoint2D>();
             if (mouseSpring == null) {
