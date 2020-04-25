@@ -12,9 +12,6 @@ public class CellGroup : MonoBehaviour {
 
     public bool isPlayer = false;
 
-    public void Start() {
-    }
-
     public void Update() {
         var com = CalculateCenterOfMass();
         if (addLump) {

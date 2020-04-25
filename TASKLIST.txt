@@ -1,5 +1,5 @@
 ✓get a simple cytoskeleton editor
-Make membranes have a better distance
+✓Make membranes have a better distance
     Idea:
         Make each membrane cell part try to lessen the angle between its left
         and right neighbors
@@ -14,14 +14,16 @@ Make the front stuff be in front of the cells
 
 rename SimplePart to CellPart
 
-joint interface: What if MakeJoint and GetJoint only succeed if the calling cellpart has permission to edit the joint?
+✓ joint interface: What if MakeJoint and GetJoint only succeed if the calling cellpart has permission to edit the joint?
 
-Decide if a joint wrapper class needs to be created
+✓Decide if a joint wrapper class needs to be created
 
 Dragging behavior:
+    Left click drag always pulls the object to the cursor
     Cytoskeleton
-        right click drag: ?
-        left click drag: create branch
+        right click drag: create branch
     Membrane:
-        right click drag: ?
-        ✓left click drag: continue the line of cell parts
+        ✓right click drag: continue the line of cell parts
+
+
+Make the mouth work properly

@@ -4,17 +4,20 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-public class JointWrapper : MonoBehaviour {
+public class JointWrapper : AwakeOnce {
     public UnityEvent onBreak;
 
     public SpringJoint2D joint;
+    [SerializeField]
     private SimplePart attachedCellPart;
     
-    void Awake() {
+    public override void DoAwake() {
         joint = gameObject.AddComponent<SpringJoint2D>();
         attachedCellPart = GetComponent<SimplePart>();
         CellPartBalance.ConfigureJointConstants(joint);
-        onBreak = new UnityEvent();
+        if (onBreak == null) {
+            onBreak = new UnityEvent();
+        }
     }
 
     public void SetConnected(SimplePart other) {
@@ -46,7 +49,7 @@ public class JointWrapper : MonoBehaviour {
     //}
     
     void OnJointBreak2D(Joint2D broken) {
-        if (joint != broken) {
+        if (broken != joint) {
             return;
         }
 

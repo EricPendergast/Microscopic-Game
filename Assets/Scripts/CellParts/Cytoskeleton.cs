@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Cytoskeleton : SimplePart {
-    new void Start() {
-        base.Start();
-    }
-
     new void OnMouseOver() {
         base.OnMouseOver();
         if (Mouse.RightMouseDown()) {
