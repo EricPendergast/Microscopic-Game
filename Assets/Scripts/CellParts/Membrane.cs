@@ -125,4 +125,6 @@ public class Membrane : SimplePart {
     public override float GetNearbyRadius() {
         return GetRadius() + MembraneBalance.i.immediateSpringDist;
     }
+
+    public override void OnCellPartEnterNearby(SimplePart cp) {}
 }
