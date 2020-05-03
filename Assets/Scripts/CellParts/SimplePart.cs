@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimplePart : MonoBehaviour {
+public class SimplePart : AwakeOnce {
     protected Rigidbody2D body;
-    private CellGroup cellGroup = null;
+    public int updateSpringsCoroutineCount = 0;
     
     public void OnMouseUp() {
         if (Mouse.LeftMouseUp()) {
@@ -33,30 +33,39 @@ public class SimplePart : MonoBehaviour {
         StartCoroutine(UpdateSpringsCoroutine());
     }
 
-    public void OnTransformParentChanged() {
-        cellGroup = transform.parent.GetComponent<CellGroup>();
+    public override void DoAwake() {
+        NearbyDetector.Create(this);
+    }
 
+    public void OnTransformParentChanged() {
         UpdateSprings();
     }
 
     public virtual void OnConnectedTo(JointWrapper joint) {}
 
-    public CellGroup GetCellGroup() {
-        return cellGroup;
+    public virtual void ConfigureJointConstants(JointWrapper joint) {
+        joint.joint.distance = joint.GetSource().GetNearbyRadius() + joint.GetConnected().GetRadius();
+        joint.joint.frequency = CellPartBalance.i.springFreq;
+        joint.joint.breakForce = CellPartBalance.i.springBreakForce;
+        joint.joint.autoConfigureDistance = false;
+        joint.joint.enableCollision = true;
     }
+
+    // Called on the joint owner when a joint breaks
+    public virtual void OnOwnedJointBroke(JointWrapper joint) {}
+
+    // Called on the other end of the joint when a joint breaks
+    public virtual void OnUnownedJointBroke(JointWrapper joint) {}
 
     IEnumerator UpdateSpringsCoroutine(){
         while (true) {
             UpdateSprings();
+            updateSpringsCoroutineCount++;
             yield return new WaitForSeconds(.5f + Random.value * CellPartBalance.i.springUpdateTime);
         }
     }
 
     public virtual void UpdateSprings() {
-        foreach (SimplePart sibling in GetNearby(CellPartBalance.i.springMaxDist)) {
-            JointWrapper joint = GetCellGroup().MakeJoint(this, sibling);
-        }
-
         foreach (var joint in GetComponents<JointWrapper>()) {
             joint.Reconfigure();
         }
@@ -73,14 +82,33 @@ public class SimplePart : MonoBehaviour {
     }
 
     public List<SimplePart> GetNearby(float distance) {
-        if (GetCellGroup() == null) {
+        CellGroup cg = transform.parent.GetComponent<CellGroup>();
+        if (cg == null) {
             return new List<SimplePart>();
         } else {
-            return GetCellGroup().GetNearby(this, distance);
+            return cg.GetNearby(this, distance);
         }
     }
 
     public float Distance(SimplePart sp1) {
         return (transform.position - sp1.transform.position).magnitude;
     }
+
+    public virtual float GetRadius() {
+        CircleCollider2D c = GetComponent<CircleCollider2D>();
+        return c.radius*c.transform.lossyScale.x;
+    }
+
+    public virtual float GetNearbyRadius() {
+        return GetRadius() + CellPartBalance.i.springDist;
+    }
+
+    public virtual void OnCellPartEnterNearby(SimplePart cp) {
+        if (Distance(cp) < CellPartBalance.i.springMaxDist) {
+            JointWrapper.MakeJoint(this, cp);
+        }
+    }
+    public virtual void OnCellPartExitNearby(SimplePart cp) {}
+
+
 }

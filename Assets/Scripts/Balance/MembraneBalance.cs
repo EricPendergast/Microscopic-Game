@@ -15,14 +15,6 @@ public class MembraneBalance : MonoBehaviour {
     public float awayMaxDist = 3;
     public float straighteningForce = 1;
 
-    public static void ConfigureJointConstants(SpringJoint2D joint) {
-        joint.distance = MembraneBalance.i.immediateSpringDist;
-        joint.frequency = MembraneBalance.i.immediateSpringFreq;
-        joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
-        joint.autoConfigureDistance = false;
-        joint.enableCollision = true;
-    }
-
     MembraneBalance() {
         if (i == null) {
             Debug.Log("New MembraneBalance created");

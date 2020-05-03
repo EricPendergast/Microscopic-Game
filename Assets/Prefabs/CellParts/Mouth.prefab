@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c26220b12b43bc6a69ea3df8b8a1d0ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialized: 0
+  updateSpringsCoroutineCount: 0
+  prev: {fileID: 0}
+  nextJoint: {fileID: 0}
+  minLoopSize: 5
 --- !u!1001 &258171387759008671
 PrefabInstance:
   m_ObjectHideFlags: 0

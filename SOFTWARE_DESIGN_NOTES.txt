@@ -14,3 +14,13 @@ Idea:
     JointWrapper also controls rendering
     Cleans itself up when it breaks
     It will have subclasses which do more and more specific things
+
+
+Cell saving may be problematic:
+    Options:
+        Don't save
+        Only save cell position and type
+        Save everything (like creating a prefab)
+        Save each cell part individually
+
+    Why do I need to save?

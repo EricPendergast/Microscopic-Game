@@ -28,10 +28,24 @@ public class Membrane : SimplePart {
 
     public override void OnConnectedTo(JointWrapper joint) {
         if (joint.GetSource() is Membrane m) {
+            Assert.IsNull(prev, "Unexpected joint connection");
             prev = m;
-            joint.onBreak.AddListener(() => {
-                prev = null;
-            });
+        }
+    }
+
+    public override void OnUnownedJointBroke(JointWrapper joint) {
+        if (joint.GetSource() is Membrane m) {
+            Assert.AreEqual(m, prev, "Unexpected joint connection broke");
+            prev = null;
+        }
+    }
+
+    public override void OnOwnedJointBroke(JointWrapper joint) {
+        if (joint.GetConnected() is Membrane m) {
+            Assert.AreEqual(joint, nextJoint);
+            // This is not technically necessary, but it makes this field show
+            // up as "null" rather than "missing" while in the editor
+            nextJoint = null;
         }
     }
 
@@ -45,8 +59,10 @@ public class Membrane : SimplePart {
     void FindNext() {
         Assert.IsNull(nextJoint);
 
+        var nearbyDetector = gameObject.GetComponentInChildren<NearbyDetector>();
+        Debug.Log(nearbyDetector);
         Membrane closest = null;
-        foreach (SimplePart sibling in GetNearby(MembraneBalance.i.immediateMaxDist)) {
+        foreach (SimplePart sibling in nearbyDetector.nearby) { //GetNearby(MembraneBalance.i.immediateMaxDist)) {
             if (sibling != this && sibling is Membrane m) {
                 if (closest == null || Distance(m) < Distance(closest)) {
                     if (m.prev == null && !m.GetNexts(minLoopSize).Contains(this)) {
@@ -64,10 +80,23 @@ public class Membrane : SimplePart {
     public void ConnectTo(Membrane newNext) {
         Assert.IsNull(newNext.prev);
 
-        nextJoint = GetCellGroup().MakeJoint(this, newNext);
+        Assert.IsNull(nextJoint);
+        nextJoint = JointWrapper.MakeJoint(this, newNext);
         Assert.IsNotNull(nextJoint);
 
-        MembraneBalance.ConfigureJointConstants(nextJoint.joint);
+        //MembraneBalance.ConfigureJointConstants(nextJoint.joint);
+    }
+
+    public void Disconnect() {
+        Assert.IsNotNull(nextJoint);
+        Destroy(nextJoint);
+        nextJoint = null;
+    }
+
+    public override void ConfigureJointConstants(JointWrapper joint) {
+        base.ConfigureJointConstants(joint);
+        joint.joint.frequency = MembraneBalance.i.immediateSpringFreq;
+        joint.joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
     }
 
     List<Membrane> GetNexts(int numNext) {
@@ -85,11 +114,15 @@ public class Membrane : SimplePart {
         if (nextJoint == null) {
             FindNext();
         } else {
-            MembraneBalance.ConfigureJointConstants(nextJoint.joint);
+            nextJoint.Reconfigure();
         }
     }
 
     public override float JointDesire(SimplePart other) {
         return 2;
+    }
+
+    public override float GetNearbyRadius() {
+        return GetRadius() + MembraneBalance.i.immediateSpringDist;
     }
 }

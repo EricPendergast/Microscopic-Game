@@ -1,0 +1,49 @@
+Current problem:
+    What is the gameplay?
+        There are bad cells, and you want to kill them to take their parts to improve your cell.
+    Where do bad cells come from?
+    It's hard to make the cell do what you want
+        Its because the flagellas are unaware of the rest of the cell
+    When/how do you modify your cell?
+        How: dragging; left click to move any part, right click to do the "secondary action"
+
+
+In general, I'm not sure how to proceed.
+Game design approach idea:
+    focus on a few mechanics, and design the game around getting the player to use those mechanics.
+    - Cell building ability
+    - Attacking other cells
+    - Exploring?
+    - acquiring new cell parts
+
+Need the ability to attack other cells
+
+Why the "Exploring" mechanic is necessary:
+    without this mechanic, this could be a battle arena type game, with
+    attacking cells 1 at a time, and you win new cell parts, and can rearrange
+    your cell each level.
+
+    That's not what I want this game to be like
+
+
+Maybe the world should be fixed size.
+    Good. limits the scope, makes the game more "designable"
+    Would all cells be preexisting? Or would they spawn in?
+    Speaking of which, the current cell saving system is unmaintainable.
+        Or is it?
+
+Membrane problems:
+    What is it for?
+        Protection?
+    Idea: Membrane is fixed shape, but if a link is broken, then nearby cell
+    parts become loose
+        Not sure what the value of this would be...
+
+Exploring:
+    What will it look like?
+    Ideas from terraria:
+        Different types of regions, with different backgrounds, types of cells who spawn...
+
+        Maybe it shouldn't all be open; maybe heave some sort of branching cave-like, stuff
+
+        Certain things will be "fixed", so they don't move.

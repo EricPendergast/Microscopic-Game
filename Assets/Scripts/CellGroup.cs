@@ -56,7 +56,7 @@ public class CellGroup : MonoBehaviour {
         foreach (Collider2D rb in Physics2D.OverlapCircleAll(part.transform.position, radius)) {
             if (rb.gameObject.TryGetComponent<SimplePart>(out SimplePart sp)) {
                 // TODO: There are multiple valid ways to do this (should there be an "== this"?)
-                if (sp.GetCellGroup() == part.GetCellGroup()) {
+                if (sp.transform.parent == part.transform.parent) {
                     nearby.Add(sp);
                 }
             }
@@ -76,51 +76,5 @@ public class CellGroup : MonoBehaviour {
         }
 
         return all;
-    }
-
-    public JointWrapper MakeJoint(SimplePart sp1, SimplePart sp2) {
-        if (sp1 == sp2) {
-            return null;
-        }
-        var joint = GetJoint(sp1, sp2);
-        if (joint != null) {
-            return joint;
-        } else if (sp1 != WhoControlsJoint(sp1, sp2)) {
-            return null;
-        }
-
-        joint = sp1.gameObject.AddComponent<JointWrapper>();
-        joint.SetConnected(sp2);
-        
-        return joint;
-    }
-
-    // Returns true if a joint was destroyed, false if already no joint.
-    public void DestroyJoint(SimplePart sp1, SimplePart sp2) {
-        var joint = GetJoint(sp1, sp2);
-        if (joint == null) {
-            //return false;
-        } else {
-            Destroy(joint);
-            //return true;
-        }
-    }
-
-    // Finds the joint from sp1 to sp2
-    public JointWrapper GetJoint(SimplePart sp1, SimplePart sp2) {
-        foreach (var joint in sp1.GetComponents<JointWrapper>()) {
-            if (joint.GetConnected() == sp2) {
-                return joint;
-            }
-        }
-        return null;
-    }
-
-    public SimplePart WhoControlsJoint(SimplePart sp1, SimplePart sp2) {
-        if (sp1.JointDesire(sp2) >= sp2.JointDesire(sp1)) {
-            return sp1;
-        } else {
-            return sp2;
-        }
     }
 }

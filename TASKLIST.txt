@@ -27,3 +27,5 @@ Dragging behavior:
 
 
 Make the mouth work properly
+
+Fix nearby detection

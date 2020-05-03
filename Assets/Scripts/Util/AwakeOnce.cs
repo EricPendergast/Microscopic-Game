@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// The purpose of this class is so that Awake doesn't get called on prefabs
 public abstract class AwakeOnce : MonoBehaviour {
     [SerializeField]
     private bool initialized = false;
