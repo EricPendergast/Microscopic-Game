@@ -26,28 +26,6 @@ public class Membrane : SimplePart {
         }
     }
 
-    public override void OnConnectedTo(JointWrapper joint) {
-        if (joint.GetSource() is Membrane m) {
-            Assert.IsNull(prev, "Unexpected joint connection");
-            prev = m;
-        }
-    }
-
-    public override void OnUnownedJointBroke(JointWrapper joint) {
-        if (joint.GetSource() is Membrane m) {
-            Assert.AreEqual(m, prev, "Unexpected joint connection broke");
-            prev = null;
-        }
-    }
-
-    public override void OnOwnedJointBroke(JointWrapper joint) {
-        if (joint.GetConnected() is Membrane m) {
-            Assert.AreEqual(joint, nextJoint);
-            // This is not technically necessary, but it makes this field show
-            // up as "null" rather than "missing" while in the editor
-            nextJoint = null;
-        }
-    }
 
     IEnumerator DraggingCoroutine() {
         while (Mouse.RightMouse() && drawer != null) {
@@ -77,28 +55,6 @@ public class Membrane : SimplePart {
         }
     }
 
-    public void ConnectTo(Membrane newNext) {
-        Assert.IsNull(newNext.prev);
-
-        Assert.IsNull(nextJoint);
-        nextJoint = JointWrapper.MakeJoint(this, newNext);
-        Assert.IsNotNull(nextJoint);
-
-        //MembraneBalance.ConfigureJointConstants(nextJoint.joint);
-    }
-
-    public void Disconnect() {
-        Assert.IsNotNull(nextJoint);
-        Destroy(nextJoint);
-        nextJoint = null;
-    }
-
-    public override void ConfigureJointConstants(JointWrapper joint) {
-        base.ConfigureJointConstants(joint);
-        joint.joint.frequency = MembraneBalance.i.immediateSpringFreq;
-        joint.joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
-    }
-
     List<Membrane> GetNexts(int numNext) {
         if (nextJoint == null || numNext == 0) {
             return new List<Membrane>();
@@ -108,6 +64,49 @@ public class Membrane : SimplePart {
             l.Add(n);
             return l;
         }
+    }
+
+    public void ConnectTo(Membrane newNext) {
+        Assert.IsNull(newNext.prev);
+
+        Assert.IsNull(nextJoint);
+        nextJoint = JointWrapper.MakeJoint(this, newNext);
+        Assert.IsNotNull(nextJoint);
+    }
+
+    public void Disconnect() {
+        Assert.IsNotNull(nextJoint);
+        Destroy(nextJoint);
+        nextJoint = null;
+    }
+
+    public override void OnConnectedTo(JointWrapper joint) {
+        if (joint.GetSource() is Membrane m) {
+            Assert.IsNull(prev, "Unexpected joint connection");
+            prev = m;
+        }
+    }
+
+    public override void OnUnownedJointBroke(JointWrapper joint) {
+        if (joint.GetSource() is Membrane m) {
+            Assert.AreEqual(m, prev, "Unexpected joint connection broke");
+            prev = null;
+        }
+    }
+
+    public override void OnOwnedJointBroke(JointWrapper joint) {
+        if (joint.GetConnected() is Membrane m) {
+            Assert.AreEqual(joint, nextJoint);
+            // This is not technically necessary, but it makes this field show
+            // up as "null" rather than "missing" while in the editor
+            nextJoint = null;
+        }
+    }
+
+    public override void ConfigureJointConstants(JointWrapper joint) {
+        base.ConfigureJointConstants(joint);
+        joint.joint.frequency = MembraneBalance.i.immediateSpringFreq;
+        joint.joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
     }
 
     public override void UpdateSprings() {

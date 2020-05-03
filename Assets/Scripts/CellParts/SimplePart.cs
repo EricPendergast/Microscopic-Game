@@ -5,6 +5,16 @@ using UnityEngine;
 public class SimplePart : AwakeOnce {
     protected Rigidbody2D body;
     public int updateSpringsCoroutineCount = 0;
+
+    public override void DoAwake() {
+        NearbyDetector.Create(this);
+    }
+
+    public void Start() {
+        body = GetComponent<Rigidbody2D>();
+        OnTransformParentChanged();
+        StartCoroutine(UpdateSpringsCoroutine());
+    }
     
     public void OnMouseUp() {
         if (Mouse.LeftMouseUp()) {
@@ -27,19 +37,35 @@ public class SimplePart : AwakeOnce {
         }
     }
 
-    public void Start() {
-        body = GetComponent<Rigidbody2D>();
-        OnTransformParentChanged();
-        StartCoroutine(UpdateSpringsCoroutine());
-    }
-
-    public override void DoAwake() {
-        NearbyDetector.Create(this);
-    }
-
     public void OnTransformParentChanged() {
         UpdateSprings();
     }
+
+    IEnumerator UpdateSpringsCoroutine(){
+        while (true) {
+            UpdateSprings();
+            updateSpringsCoroutineCount++;
+            yield return new WaitForSeconds(.5f + Random.value * CellPartBalance.i.springUpdateTime);
+        }
+    }
+
+    public void Update() {
+        body.velocity = body.velocity*(CellPartBalance.i.friction);
+    }
+
+    public List<SimplePart> GetNearby(float distance) {
+        CellGroup cg = transform.parent.GetComponent<CellGroup>();
+        if (cg == null) {
+            return new List<SimplePart>();
+        } else {
+            return cg.GetNearby(this, distance);
+        }
+    }
+
+    public float Distance(SimplePart sp1) {
+        return (transform.position - sp1.transform.position).magnitude;
+    }
+
 
     public virtual void OnConnectedTo(JointWrapper joint) {}
 
@@ -57,13 +83,6 @@ public class SimplePart : AwakeOnce {
     // Called on the other end of the joint when a joint breaks
     public virtual void OnUnownedJointBroke(JointWrapper joint) {}
 
-    IEnumerator UpdateSpringsCoroutine(){
-        while (true) {
-            UpdateSprings();
-            updateSpringsCoroutineCount++;
-            yield return new WaitForSeconds(.5f + Random.value * CellPartBalance.i.springUpdateTime);
-        }
-    }
 
     public virtual void UpdateSprings() {
         foreach (var joint in GetComponents<JointWrapper>()) {
@@ -71,27 +90,10 @@ public class SimplePart : AwakeOnce {
         }
     }
 
-    public void Update() {
-        body.velocity = body.velocity*(CellPartBalance.i.friction);
-    }
-
     // Returns an integer representing how much this cell part wants to control
     // the joint from it to the other cell part
     public virtual float JointDesire(SimplePart other) {
         return 0;
-    }
-
-    public List<SimplePart> GetNearby(float distance) {
-        CellGroup cg = transform.parent.GetComponent<CellGroup>();
-        if (cg == null) {
-            return new List<SimplePart>();
-        } else {
-            return cg.GetNearby(this, distance);
-        }
-    }
-
-    public float Distance(SimplePart sp1) {
-        return (transform.position - sp1.transform.position).magnitude;
     }
 
     public virtual float GetRadius() {
@@ -108,7 +110,6 @@ public class SimplePart : AwakeOnce {
             JointWrapper.MakeJoint(this, cp);
         }
     }
+
     public virtual void OnCellPartExitNearby(SimplePart cp) {}
-
-
 }
