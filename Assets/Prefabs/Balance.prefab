@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   friction: 0.99
-  springDist: 0.2
+  springDist: 0.5
   springFreq: 1.5
   springBreakForce: 30
   springMaxDist: 2
@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85b85f773311e2a0895f4aecc37b260e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  immediateSpringDist: 0.7
+  immediateSpringDist: 0.2
   immediateSpringFreq: 8
   immediateSpringBreakForce: 200
   awaySpringDist: 2.25
