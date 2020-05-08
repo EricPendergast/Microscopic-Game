@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f758aa35b76a007ead4a3909a34ac84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialized: 0
+  updateSpringsCoroutineCount: 0
 --- !u!1001 &7057698781187050847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19,6 +21,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2604061086406660858, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1867866104d29947db2fa242d0991174, type: 2}
     - target: {fileID: 6789981924681045440, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}
       propertyPath: m_IsTrigger

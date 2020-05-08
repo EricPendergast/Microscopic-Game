@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55774ba56f485a28ca03b173b6cca170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  joints: []
+  initialized: 0
+  updateSpringsCoroutineCount: 0
   accel: 10
 --- !u!1001 &7912023199694790485
 PrefabInstance:
@@ -21,6 +22,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2604061086406660858, guid: bbe8d166b34374d3e9c9f099dcfe5769,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e8fa68e191aa17f2ea086e39e14fbfb8, type: 2}
     - target: {fileID: 6789981924681045441, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}
       propertyPath: m_Color.r

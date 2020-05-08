@@ -28,4 +28,9 @@ Dragging behavior:
 
 Make the mouth work properly
 
-Fix nearby detection
+✓Fix nearby detection
+
+Fix transfering of cell parts between cells
+
+Improve rendering
+    - Make a custom shader for cell parts

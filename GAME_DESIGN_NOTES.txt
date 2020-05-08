@@ -47,3 +47,8 @@ Exploring:
         Maybe it shouldn't all be open; maybe heave some sort of branching cave-like, stuff
 
         Certain things will be "fixed", so they don't move.
+
+Collecting:
+    You want to collect cell parts
+    You can take existing cell parts, or produce your own, but only if you have
+        their DNA which you acquire from consuming nuclei.
