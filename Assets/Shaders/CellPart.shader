@@ -12,6 +12,7 @@ Shader "Unlit/CellPart"
         perlinScale ("Perlin scale", Range(.01, 3)) = 1
         perlinIntensity ("Perlin intensity", Range(0, 5)) = 1
         blur ("Blur distance", Float) = .01
+        overallScale ("Overall scale", Float) = 1
     }
     SubShader
     {
@@ -39,6 +40,7 @@ Shader "Unlit/CellPart"
                 float2 uv : TEXCOORD0;
                 float4 screen_vertex : SV_POSITION;
                 float4 world_position : TEXCOORD1;
+                float4 local_position : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -52,6 +54,7 @@ Shader "Unlit/CellPart"
             float4 perlinOffset;
             float perlinIntensity;
             float blur;
+            float overallScale;
 
             struct CircleParameters {
                 float radius;
@@ -67,10 +70,13 @@ Shader "Unlit/CellPart"
                 //o.screen_vertex = v.vertex;
                 o.world_position = mul(UNITY_MATRIX_M, float4(v.vertex));
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.local_position = float4(o.uv + rand2D(o.world_position.z, 1), 0, 0);
+                /*o.local_position = v.vertex;*/
                 return o;
             }
 
             float4 getCircleNoise(float2 pos, float blur) {
+                pos *= overallScale;
                 float2 cell = floor(pos/cellSize)*cellSize;
                 float min = radius;
                 float max = cellSize-radius;
@@ -86,8 +92,10 @@ Shader "Unlit/CellPart"
             }
 
             fixed4 frag (v2f i) : SV_Target {
-                float4 circNoise1 = wavyCircleNoise(i.world_position, blur);
-                float4 circNoise2 = wavyCircleNoise(i.world_position + float2(500.5, 500.5), blur/2);
+                //TODO: See if model.position works? Or model scale?
+                /*i.world_position = float4(i.uv, i.world_position.zw);*/
+                float4 circNoise1 = wavyCircleNoise(i.local_position, blur);
+                float4 circNoise2 = wavyCircleNoise(i.local_position + float2(500.5, 500.5), blur/2);
 
                 float dist = length(i.uv - float2(.5,.5));
                 if (dist > .5) {

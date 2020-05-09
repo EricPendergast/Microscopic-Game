@@ -74,6 +74,7 @@ Material:
     - _ZWrite: 1
     - blur: 0.03
     - cellSize: 0.28
+    - overallScale: 0.4
     - perlinIntensity: 0.14
     - perlinScale: 1.55
     - radius: 0.09

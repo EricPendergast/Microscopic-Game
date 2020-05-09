@@ -154,7 +154,7 @@ Transform:
   m_GameObject: {fileID: 348346786}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.29, y: -0.21, z: 11}
-  m_LocalScale: {x: 7.7166557, y: 5.8523617, z: 1}
+  m_LocalScale: {x: 8, y: 8, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
   m_RootOrder: 0
@@ -177,7 +177,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 09ea0ef9b3f10c23ead2424a90dc5c97, type: 2}
+  - {fileID: 2100000, guid: c3dffddacb40f49bbb05fc306c2fcd06, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -802,6 +802,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5327297581881675183, guid: 01aed78c909e21df99d0fbfaf3fe3dba,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01aed78c909e21df99d0fbfaf3fe3dba, type: 3}
 --- !u!1001 &2058535750
@@ -1120,7 +1125,7 @@ PrefabInstance:
     - target: {fileID: 3744738399443667606, guid: 01aed78c909e21df99d0fbfaf3fe3dba,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3744738399443667606, guid: 01aed78c909e21df99d0fbfaf3fe3dba,
         type: 3}

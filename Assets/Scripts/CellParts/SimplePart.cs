@@ -12,6 +12,7 @@ public class SimplePart : AwakeOnce {
 
     public void Start() {
         body = GetComponent<Rigidbody2D>();
+        transform.position += new Vector3(0,0,Random.value);
         OnTransformParentChanged();
         StartCoroutine(UpdateSpringsCoroutine());
     }
