@@ -13,6 +13,8 @@ Shader "Unlit/CellPart"
         perlinIntensity ("Perlin intensity", Range(0, 5)) = 1
         blur ("Blur distance", Float) = .01
         overallScale ("Overall scale", Float) = 1
+        time ("Time", Float) = 0
+        animationSpeed ("Animation speed", Float) = .1
     }
     SubShader
     {
@@ -55,6 +57,8 @@ Shader "Unlit/CellPart"
             float perlinIntensity;
             float blur;
             float overallScale;
+            float time;
+            float animationSpeed;
 
             struct CircleParameters {
                 float radius;
@@ -76,7 +80,6 @@ Shader "Unlit/CellPart"
             }
 
             float4 getCircleNoise(float2 pos, float blur) {
-                pos *= overallScale;
                 float2 cell = floor(pos/cellSize)*cellSize;
                 float min = radius;
                 float max = cellSize-radius;
@@ -88,7 +91,8 @@ Shader "Unlit/CellPart"
             }
 
             float4 wavyCircleNoise(float2 pos, float blur) {
-                return getCircleNoise(pos + perlinIntensity*naturalPerlin2D(pos*perlinScale + perlinOffset), blur);
+                pos *= overallScale;
+                return getCircleNoise(pos + perlinIntensity*naturalPerlin2D(pos*perlinScale + perlinOffset + float2(time, time)*animationSpeed), blur);
             }
 
             fixed4 frag (v2f i) : SV_Target {
