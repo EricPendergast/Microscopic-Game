@@ -17,6 +17,9 @@ public class NearbyDetector : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.attachedRigidbody.TryGetComponent<SimplePart>(out SimplePart sp)) {
+            if (sp == owner) {
+                return;
+            }
             owner.OnCellPartEnterNearby(sp);
             nearby.Add(sp);
         }
@@ -24,6 +27,9 @@ public class NearbyDetector : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D collider) {
         if (collider.attachedRigidbody.TryGetComponent<SimplePart>(out SimplePart sp)) {
+            if (sp == owner) {
+                return;
+            }
             owner.OnCellPartExitNearby(sp);
             nearby.Remove(sp);
         }
@@ -32,9 +38,14 @@ public class NearbyDetector : MonoBehaviour {
     public static void Create(SimplePart part) {
         GameObject go = new GameObject();
         go.transform.SetParent(part.transform);
-        go.transform.position = part.transform.position;
+        // This should be behind the cell part because so that it doesn't
+        // intercept mouse clicks
+        go.transform.localPosition = Vector3.forward;
         var circ = go.AddComponent<CircleCollider2D>();
         circ.isTrigger = true;
         go.AddComponent<NearbyDetector>().owner = part;
+        var body = go.AddComponent<Rigidbody2D>();
+        //body.gravityScale = 0;
+        body.isKinematic = true;
     }
 }

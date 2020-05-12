@@ -13,11 +13,11 @@ public class CellPartBalance : MonoBehaviour {
     public float springUpdateTime = 1;
 
     CellPartBalance() {
-        if (i == null) {
-            Debug.Log("New CellPartBalance created");
-        } else {
-            Debug.Log("CellPartBalance replaced");
-        }
+        //if (i == null) {
+        //    Debug.Log("New CellPartBalance created");
+        //} else {
+        //    Debug.Log("CellPartBalance replaced");
+        //}
         i = this;
     }
 }

@@ -12,7 +12,11 @@ public class SimplePart : AwakeOnce {
 
     public void Start() {
         body = GetComponent<Rigidbody2D>();
-        transform.position += new Vector3(0,0,Random.value);
+        {
+            var p = transform.position;
+            p.z = -Random.value;
+            transform.position = p;
+        }
         OnTransformParentChanged();
         StartCoroutine(UpdateSpringsCoroutine());
     }
@@ -39,12 +43,12 @@ public class SimplePart : AwakeOnce {
     }
 
     public void OnTransformParentChanged() {
-        UpdateSprings();
+        //UpdateSprings();
     }
 
     IEnumerator UpdateSpringsCoroutine(){
         while (true) {
-            UpdateSprings();
+            //UpdateSprings();
             updateSpringsCoroutineCount++;
             yield return new WaitForSeconds(.5f + Random.value * CellPartBalance.i.springUpdateTime);
         }
@@ -71,6 +75,7 @@ public class SimplePart : AwakeOnce {
     public virtual void OnConnectedTo(JointWrapper joint) {}
 
     public virtual void ConfigureJointConstants(JointWrapper joint) {
+        Debug.Log("Configutnrirnin: " + this);
         joint.joint.distance = joint.GetSource().GetNearbyRadius() + joint.GetConnected().GetRadius();
         joint.joint.frequency = CellPartBalance.i.springFreq;
         joint.joint.breakForce = CellPartBalance.i.springBreakForce;

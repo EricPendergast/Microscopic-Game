@@ -39,7 +39,7 @@ public class JointWrapper : AwakeOnce {
 
     public void Reconfigure() {
         if (joint != null) {
-            GetConnected().ConfigureJointConstants(this);
+            GetSource().ConfigureJointConstants(this);
         }
     }
 
@@ -62,16 +62,14 @@ public class JointWrapper : AwakeOnce {
 
         NotifyJointBreak();
 
+        joint = null;
         Destroy(this);
     }
     
     void OnDestroy() {
-        // This is in case Destroy() was called directly on this object, while
-        // the spring still exists
-        if (joint != null) {
-            NotifyJointBreak();
-            Destroy(joint);
-        }
+        NotifyJointBreak();
+        Destroy(joint);
+        joint = null;
     }
 
     public static JointWrapper MakeJoint(SimplePart sp1, SimplePart sp2) {

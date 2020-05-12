@@ -76,8 +76,7 @@ public class Membrane : SimplePart {
 
     public void Disconnect() {
         Assert.IsNotNull(nextJoint);
-        Destroy(nextJoint);
-        nextJoint = null;
+        DestroyImmediate(nextJoint);
     }
 
     public override void OnConnectedTo(JointWrapper joint) {
@@ -110,9 +109,7 @@ public class Membrane : SimplePart {
     }
 
     public override void UpdateSprings() {
-        if (nextJoint == null) {
-            FindNext();
-        } else {
+        if (nextJoint != null) {
             nextJoint.Reconfigure();
         }
     }
@@ -125,5 +122,9 @@ public class Membrane : SimplePart {
         return GetRadius() + MembraneBalance.i.immediateSpringDist;
     }
 
-    public override void OnCellPartEnterNearby(SimplePart cp) {}
+    public override void OnCellPartEnterNearby(SimplePart cp) {
+        if (nextJoint == null) {
+            FindNext();
+        }
+    }
 }

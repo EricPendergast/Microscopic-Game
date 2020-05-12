@@ -16,11 +16,11 @@ public class MembraneBalance : MonoBehaviour {
     public float straighteningForce = 1;
 
     MembraneBalance() {
-        if (i == null) {
-            Debug.Log("New MembraneBalance created");
-        } else {
-            Debug.Log("MembraneBalance replaced");
-        }
+        //if (i == null) {
+        //    Debug.Log("New MembraneBalance created");
+        //} else {
+        //    Debug.Log("MembraneBalance replaced");
+        //}
         i = this;
     }
 }
