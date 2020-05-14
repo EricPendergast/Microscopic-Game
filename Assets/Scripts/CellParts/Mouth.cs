@@ -21,9 +21,10 @@ public class Mouth : SimplePart {
         return 3;
     }
 
-    public override void ConfigureJointConstants(JointWrapper joint) {
-        base.ConfigureJointConstants(joint);
-        joint.joint.distance = 0;
-        joint.joint.enableCollision = false;
+    public override void ConfigureJointConstants(JointWrapper wrap) {
+        base.ConfigureJointConstants(wrap);
+        var joint = wrap.GetOrMakeJoint<SpringJoint2D>();
+        joint.distance = 0;
+        joint.enableCollision = false;
     }
 }

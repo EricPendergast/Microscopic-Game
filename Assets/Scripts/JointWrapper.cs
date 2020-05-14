@@ -3,44 +3,51 @@ using UnityEngine.Assertions;
 
 // TODO: What should happen if someone calls Destroy() on a joint? Right now it
 // does not call the OnJointBreak stuff.
-public class JointWrapper : AwakeOnce {
-    public SpringJoint2D joint;
+public class JointWrapper : MonoBehaviour {
     [SerializeField]
-    private SimplePart attachedCellPart;
+    private Joint2D joint;
+    [SerializeField]
+    private SimplePart source;
+    [SerializeField]
+    private SimplePart connected;
+    [SerializeField]
     private bool notifiedBreak = false;
+    private bool isDestroyed = false;
     
-    public override void DoAwake() {
-        joint = gameObject.AddComponent<SpringJoint2D>();
-        attachedCellPart = GetComponent<SimplePart>();
-    }
-
-    void Start() {
+    private void Init(SimplePart source, SimplePart connected) {
+        this.source = source;
+        this.connected = connected;
         Reconfigure();
-    }
-
-    private void SetConnected(SimplePart other) {
-        Assert.IsNull(joint.connectedBody);
-        joint.connectedBody = other.GetComponent<Rigidbody2D>();
-        Reconfigure();
-        other.OnConnectedTo(this);
     }
 
     public SimplePart GetConnected() {
-        if (joint.connectedBody == null) {
-            return null;
-        } else {
-            return joint.connectedBody.GetComponent<SimplePart>();
-        }
+        return connected;
     }
 
     public SimplePart GetSource() {
-        return attachedCellPart;
+        return source;
+    }
+
+    public bool HasJoint() {
+        return HasJoint<Joint2D>();
+    }
+
+    public bool HasJoint<T>() where T : Joint2D {
+        return joint != null && joint is T;
+    }
+
+    public T GetOrMakeJoint<T>() where T : Joint2D {
+        if (joint == null) {
+            joint = gameObject.AddComponent<T>();
+            joint.connectedBody = connected.body;
+            connected.OnConnectedTo(this);
+        }
+        return (T)joint;
     }
 
     public void Reconfigure() {
-        if (joint != null) {
-            GetSource().ConfigureJointConstants(this);
-        }
+        GetSource().ConfigureJointConstants(this);
+        Assert.IsNotNull(joint);
     }
 
     //void Update() {
@@ -63,10 +70,23 @@ public class JointWrapper : AwakeOnce {
         NotifyJointBreak();
 
         joint = null;
+        NotifyJointBreak();
+        isDestroyed = true;
         Destroy(this);
     }
     
+    public void Destroy() {
+        NotifyJointBreak();
+        isDestroyed = true;
+        Destroy(this);
+    }
+
+    void OnApplicationQuit() {
+        isDestroyed = true;
+    }
+
     void OnDestroy() {
+        Assert.IsTrue(isDestroyed, "Someone destroyed JointWrapper directly, without calling Destroy()");
         NotifyJointBreak();
         Destroy(joint);
         joint = null;
@@ -86,7 +106,7 @@ public class JointWrapper : AwakeOnce {
         }
 
         joint = sp1.gameObject.AddComponent<JointWrapper>();
-        joint.SetConnected(sp2);
+        joint.Init(sp1, sp2);
         
         return joint;
     }
@@ -94,7 +114,7 @@ public class JointWrapper : AwakeOnce {
     // Finds the joint from sp1 to sp2
     public static JointWrapper GetJoint(SimplePart sp1, SimplePart sp2) {
         foreach (var joint in sp1.GetComponents<JointWrapper>()) {
-            if (joint.GetConnected() == sp2) {
+            if (!joint.isDestroyed && joint.GetConnected() == sp2) {
                 return joint;
             }
         }

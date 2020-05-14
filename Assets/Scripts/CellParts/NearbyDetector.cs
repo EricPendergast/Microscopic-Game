@@ -20,8 +20,8 @@ public class NearbyDetector : MonoBehaviour {
             if (sp == owner) {
                 return;
             }
-            owner.OnCellPartEnterNearby(sp);
             nearby.Add(sp);
+            owner.OnCellPartEnterNearby(sp);
         }
     }
 
@@ -30,8 +30,8 @@ public class NearbyDetector : MonoBehaviour {
             if (sp == owner) {
                 return;
             }
-            owner.OnCellPartExitNearby(sp);
             nearby.Remove(sp);
+            owner.OnCellPartExitNearby(sp);
         }
     }
 

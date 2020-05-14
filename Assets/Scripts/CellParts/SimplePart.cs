@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimplePart : AwakeOnce {
-    protected Rigidbody2D body;
+    public Rigidbody2D body;
     public int updateSpringsCoroutineCount = 0;
 
     public override void DoAwake() {
         NearbyDetector.Create(this);
+        body = GetComponent<Rigidbody2D>();
     }
 
     public void Start() {
-        body = GetComponent<Rigidbody2D>();
         {
             var p = transform.position;
             p.z = -Random.value;
@@ -74,13 +74,14 @@ public class SimplePart : AwakeOnce {
 
     public virtual void OnConnectedTo(JointWrapper joint) {}
 
-    public virtual void ConfigureJointConstants(JointWrapper joint) {
-        Debug.Log("Configutnrirnin: " + this);
-        joint.joint.distance = joint.GetSource().GetNearbyRadius() + joint.GetConnected().GetRadius();
-        joint.joint.frequency = CellPartBalance.i.springFreq;
-        joint.joint.breakForce = CellPartBalance.i.springBreakForce;
-        joint.joint.autoConfigureDistance = false;
-        joint.joint.enableCollision = true;
+    public virtual void ConfigureJointConstants(JointWrapper wrap) {
+        var joint = wrap.GetOrMakeJoint<SpringJoint2D>();
+
+        joint.distance = wrap.GetSource().GetNearbyRadius() + wrap.GetConnected().GetRadius();
+        joint.frequency = CellPartBalance.i.springFreq;
+        joint.breakForce = CellPartBalance.i.springBreakForce;
+        joint.autoConfigureDistance = false;
+        joint.enableCollision = true;
     }
 
     // Called on the joint owner when a joint breaks
@@ -99,7 +100,7 @@ public class SimplePart : AwakeOnce {
     // Returns an integer representing how much this cell part wants to control
     // the joint from it to the other cell part
     public virtual float JointDesire(SimplePart other) {
-        return 0;
+        return -1;
     }
 
     public virtual float GetRadius() {

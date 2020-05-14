@@ -23,12 +23,12 @@ class MembraneDrawer {
         } else {
             var difference = Mouse.WorldPosition() - (Vector2)current.transform.position;
             float springDist = current.GetNearbyRadius() + .25f;
-            Debug.Log(difference);
             // if mouse is more than immediateSpringDist from current, make a new node
             if (difference.magnitude > springDist) {
                 Membrane next = CreateMembrane((Vector2)current.transform.position + difference.normalized*springDist);
 
                 current.ConnectTo(next);
+
                 current = next;
             }
         }

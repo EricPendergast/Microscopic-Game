@@ -38,7 +38,6 @@ public class Membrane : SimplePart {
         Assert.IsNull(nextJoint);
 
         var nearbyDetector = gameObject.GetComponentInChildren<NearbyDetector>();
-        Debug.Log(nearbyDetector);
         Membrane closest = null;
         foreach (SimplePart sibling in nearbyDetector.nearby) { //GetNearby(MembraneBalance.i.immediateMaxDist)) {
             if (sibling != this && sibling is Membrane m) {
@@ -68,7 +67,6 @@ public class Membrane : SimplePart {
 
     public void ConnectTo(Membrane newNext) {
         Assert.IsNull(newNext.prev);
-
         Assert.IsNull(nextJoint);
         nextJoint = JointWrapper.MakeJoint(this, newNext);
         Assert.IsNotNull(nextJoint);
@@ -76,7 +74,8 @@ public class Membrane : SimplePart {
 
     public void Disconnect() {
         Assert.IsNotNull(nextJoint);
-        DestroyImmediate(nextJoint);
+        nextJoint.Destroy();
+        Assert.IsNull(nextJoint);
     }
 
     public override void OnConnectedTo(JointWrapper joint) {
@@ -102,10 +101,11 @@ public class Membrane : SimplePart {
         }
     }
 
-    public override void ConfigureJointConstants(JointWrapper joint) {
-        base.ConfigureJointConstants(joint);
-        joint.joint.frequency = MembraneBalance.i.immediateSpringFreq;
-        joint.joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
+    public override void ConfigureJointConstants(JointWrapper wrap) {
+        base.ConfigureJointConstants(wrap);
+        var joint = wrap.GetOrMakeJoint<SpringJoint2D>();
+        joint.frequency = MembraneBalance.i.immediateSpringFreq;
+        joint.breakForce = MembraneBalance.i.immediateSpringBreakForce;
     }
 
     public override void UpdateSprings() {
