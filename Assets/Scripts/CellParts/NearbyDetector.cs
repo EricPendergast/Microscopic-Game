@@ -35,7 +35,7 @@ public class NearbyDetector : MonoBehaviour {
         }
     }
 
-    public static void Create(SimplePart part) {
+    public static NearbyDetector Create(SimplePart part) {
         GameObject go = new GameObject();
         go.transform.SetParent(part.transform);
         // This should be behind the cell part because so that it doesn't
@@ -43,9 +43,11 @@ public class NearbyDetector : MonoBehaviour {
         go.transform.localPosition = Vector3.forward;
         var circ = go.AddComponent<CircleCollider2D>();
         circ.isTrigger = true;
-        go.AddComponent<NearbyDetector>().owner = part;
+        NearbyDetector detector = go.AddComponent<NearbyDetector>();
+        detector.owner = part;
         var body = go.AddComponent<Rigidbody2D>();
         //body.gravityScale = 0;
         body.isKinematic = true;
+        return detector;
     }
 }

@@ -37,9 +37,8 @@ public class Membrane : SimplePart {
     void FindNext() {
         Assert.IsNull(nextJoint);
 
-        var nearbyDetector = gameObject.GetComponentInChildren<NearbyDetector>();
         Membrane closest = null;
-        foreach (SimplePart sibling in nearbyDetector.nearby) { //GetNearby(MembraneBalance.i.immediateMaxDist)) {
+        foreach (SimplePart sibling in nearby.nearby) {
             if (sibling != this && sibling is Membrane m) {
                 if (closest == null || Distance(m) < Distance(closest)) {
                     if (m.prev == null && !m.GetNexts(minLoopSize).Contains(this)) {

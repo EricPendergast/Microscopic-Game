@@ -2,13 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SimplePart : AwakeOnce {
+public class SimplePart : MonoBehaviour {
     public Rigidbody2D body;
     public int updateSpringsCoroutineCount = 0;
+    public NearbyDetector nearby;
 
-    public override void DoAwake() {
-        NearbyDetector.Create(this);
-        body = GetComponent<Rigidbody2D>();
+    public void Awake() {
+        if (nearby == null) {
+            nearby = NearbyDetector.Create(this);
+        }
+        if (body == null) {
+            body = GetComponent<Rigidbody2D>();
+        }
     }
 
     public void Start() {
