@@ -2,6 +2,7 @@ Current problem:
     What is the gameplay?
         There are bad cells, and you want to kill them to take their parts to improve your cell.
     Where do bad cells come from?
+        They spawn in?
     It's hard to make the cell do what you want
         Its because the flagellas are unaware of the rest of the cell
     When/how do you modify your cell?
@@ -34,7 +35,8 @@ Maybe the world should be fixed size.
 
 Membrane problems:
     What is it for?
-        Protection?
+        ✓Protection?
+        Most cell parts are vulnerable to \it certain things \/, but Membranes are only vulnerable to ... something
     Idea: Membrane is fixed shape, but if a link is broken, then nearby cell
     parts become loose
         Not sure what the value of this would be...
@@ -52,3 +54,36 @@ Collecting:
     You want to collect cell parts
     You can take existing cell parts, or produce your own, but only if you have
         their DNA which you acquire from consuming nuclei.
+
+
+Editing your cell's configuration:
+    Idea: You control the nucleus, which can move around and move other stuff
+    Nucleus has a "transient" mode, where it can step over anything it has control over
+
+
+Motivations for using all sorts of cell parts:
+    Various achievements, where using certain cell parts will let you progress
+    up a tree (This is waaaay in the future though)
+
+
+Nucleus behavior:
+    I'm thinking everything the player does will be controlled through the nucleus.
+    You should be able to make a functioning cell without a membrane
+        The nucleus can hold onto a couple cell parts, but not too many
+
+    Nucleus only controls nearby cell parts
+    Idea 1:
+        Its range can be extended with nervous system fibers
+    Idea 2:
+        Cell parts form a graph, nucleus controls all cell parts in whatever
+        connected component it is in
+    
+
+Cell maneuvering:
+    Idea 1:
+        Q and E rotate the cell, mouse click and hold makes the cell move towards the mouse
+    Idea 2:
+        You directly control the flagella with WASD
+    Idea 3:
+        You control the flagella with WASD, but they are "smart"; they apply
+        force such that the front of the cell stays in front

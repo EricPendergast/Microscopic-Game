@@ -32,5 +32,14 @@ Make the mouth work properly
 
 Fix transfering of cell parts between cells
 
-Improve rendering
-    - Make a custom shader for cell parts
+✓Improve rendering
+    ✓- Make a custom shader for cell parts
+
+Implement nucleus functionality
+    ✓- Can move
+    - Can hold onto a few nearby cell parts
+    - Can move around other cell parts
+    - Can control nearby cell parts
+
+Make membranes self-healing
+    - If a membrane joint breaks, replace it with a longer, weaker joint

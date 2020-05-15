@@ -59,7 +59,7 @@ public class SimplePart : MonoBehaviour {
         }
     }
 
-    public void Update() {
+    public virtual void Update() {
         body.velocity = body.velocity*(CellPartBalance.i.friction);
     }
 
