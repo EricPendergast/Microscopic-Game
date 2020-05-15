@@ -21,6 +21,7 @@ public class Nucleus : SimplePart {
         SpringJoint2D sticky = wrap.GetOrMakeJoint<SpringJoint2D>();
         sticky.distance = .5f;
         sticky.frequency = 2;
+        sticky.breakForce = 100;
         sticky.enableCollision = true;
         stickyJoints.Add(wrap);
     }

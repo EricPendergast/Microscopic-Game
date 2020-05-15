@@ -5,7 +5,7 @@ using UnityEngine;
 public class Mouth : SimplePart {
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.TryGetComponent(out SimplePart part)) {
-            if (part.transform.parent != transform.parent) {
+            if (!(part is Mouth) && part.transform.parent != transform.parent) {
                 Destroy(part.gameObject);
             }
         }

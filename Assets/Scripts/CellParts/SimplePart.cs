@@ -77,7 +77,9 @@ public class SimplePart : MonoBehaviour {
     }
 
 
-    public virtual void OnConnectedTo(JointWrapper joint) {}
+    public virtual void OnConnectedTo(JointWrapper joint) {
+        // TODO: Keep track of all connected cells
+    }
 
     public virtual void ConfigureJointConstants(JointWrapper wrap) {
         var joint = wrap.GetOrMakeJoint<SpringJoint2D>();
@@ -118,7 +120,7 @@ public class SimplePart : MonoBehaviour {
     }
 
     public virtual void OnCellPartEnterNearby(SimplePart cp) {
-        if (Distance(cp) < CellPartBalance.i.springMaxDist) {
+        if (Distance(cp) < CellPartBalance.i.springMaxDist && cp.transform.parent == transform.parent) {
             JointWrapper.MakeJoint(this, cp);
         }
     }
