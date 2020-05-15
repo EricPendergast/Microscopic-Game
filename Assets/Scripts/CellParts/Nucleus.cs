@@ -7,7 +7,7 @@ public class Nucleus : SimplePart {
     public List<SpringJoint2D> stickyJoints;
     public bool isSticky = true;
 
-    new void Awake() {
+    public override void Awake() {
         base.Awake();
         if (stickyJoints == null) {
             stickyJoints = new List<SpringJoint2D>();

@@ -3,7 +3,7 @@ using UnityEngine;
 public class Flagella : SimplePart {
     public float accel;
 
-    //new void Update() {
+    //public override void Update() {
     //    //CellGroup cg = transform.parent.GetComponent<CellGroup>();
     //    //// TODO: Make an empty cellgrouop, so that GetCellGroup is never null
     //    //if (cg != null && cg.isPlayer) {

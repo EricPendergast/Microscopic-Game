@@ -11,14 +11,14 @@ public class Membrane : SimplePart {
 
     MembraneDrawer drawer = null;
 
-    new void Start() {
+    public override void Start() {
         base.Start();
         if (nextJoint == null) {
             FindNext();
         }
     }
 
-    new void OnMouseOver() {
+    public override void OnMouseOver() {
         base.OnMouseOver();
         if (Mouse.RightMouseDown()) {
             drawer = new MembraneDrawer(this);

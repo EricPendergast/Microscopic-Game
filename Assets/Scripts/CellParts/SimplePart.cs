@@ -7,7 +7,7 @@ public class SimplePart : MonoBehaviour {
     public int updateSpringsCoroutineCount = 0;
     public NearbyDetector nearby;
 
-    public void Awake() {
+    public virtual void Awake() {
         if (nearby == null) {
             nearby = NearbyDetector.Create(this);
         }
@@ -16,7 +16,7 @@ public class SimplePart : MonoBehaviour {
         }
     }
 
-    public void Start() {
+    public virtual void Start() {
         {
             var p = transform.position;
             p.z = -Random.value;
@@ -26,17 +26,17 @@ public class SimplePart : MonoBehaviour {
         StartCoroutine(UpdateSpringsCoroutine());
     }
     
-    public void OnMouseUp() {
+    public virtual void OnMouseUp() {
         if (Mouse.LeftMouseUp()) {
             Destroy(GetComponent<TargetJoint2D>());
         }
     }
 
-    public void OnMouseOver() {
+    public virtual void OnMouseOver() {
         Mouse.OnMouseOverCellPart(this);
     }
 
-    public void OnMouseDrag() {
+    public virtual void OnMouseDrag() {
         if (Mouse.LeftMouse()) {
             //Mouse.OnMouseDragCellPart(this);
             var mouseSpring = GetComponent<TargetJoint2D>();
