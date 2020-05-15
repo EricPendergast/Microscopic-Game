@@ -83,6 +83,10 @@ Nucleus behavior:
             partially computed result which may still be useful
     Idea 3:
         Nucleus commands propogate over joints, once per frame
+
+    The nucleus has two modes: Sticky and not sticky
+        In sticky mode, it will latch onto nearby cell parts, and also control them
+        When not in sticky mode, it can move around freely
     
 
 Cell maneuvering:

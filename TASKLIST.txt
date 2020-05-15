@@ -41,5 +41,8 @@ Implement nucleus functionality
     - Can control nearby cell parts
     (will put this off)- Can move around other cell parts
 
+Implement mouth functionality
+    - (Design mouth functionality)
+
 Make membranes self-healing
     - If a membrane joint breaks, replace it with a longer, weaker joint

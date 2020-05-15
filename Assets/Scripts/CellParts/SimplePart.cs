@@ -84,7 +84,7 @@ public class SimplePart : MonoBehaviour {
     public virtual void ConfigureJointConstants(JointWrapper wrap) {
         var joint = wrap.GetOrMakeJoint<SpringJoint2D>();
 
-        joint.distance = wrap.GetSource().GetNearbyRadius() + wrap.GetConnected().GetRadius();
+        joint.distance = wrap.GetSource().GetNearbyRadius() + wrap.GetConnected().GetRadius() - .2f;
         joint.frequency = CellPartBalance.i.springFreq;
         joint.breakForce = CellPartBalance.i.springBreakForce;
         joint.autoConfigureDistance = false;
@@ -116,7 +116,7 @@ public class SimplePart : MonoBehaviour {
     }
 
     public virtual float GetNearbyRadius() {
-        return GetRadius() + CellPartBalance.i.springDist;
+        return GetRadius() + .1f;
     }
 
     public virtual void OnCellPartEnterNearby(SimplePart cp) {
