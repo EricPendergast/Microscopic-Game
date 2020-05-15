@@ -6,17 +6,16 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6750870653750234715}
+  m_GameObject: {fileID: 258171387759008701}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c26220b12b43bc6a69ea3df8b8a1d0ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialized: 0
+  body: {fileID: 0}
   updateSpringsCoroutineCount: 0
-  prev: {fileID: 0}
-  nextJoint: {fileID: 0}
-  minLoopSize: 5
+  nearby: {fileID: 0}
+  anchor: {fileID: 0}
 --- !u!1001 &258171387759008671
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29,11 +28,6 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e566915264932cd0c810cb88d7f3246e, type: 2}
-    - target: {fileID: 6789981924681045440, guid: bbe8d166b34374d3e9c9f099dcfe5769,
-        type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6789981924681045441, guid: bbe8d166b34374d3e9c9f099dcfe5769,
         type: 3}
       propertyPath: m_Color.b
@@ -122,7 +116,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 3998049277265290056, guid: bbe8d166b34374d3e9c9f099dcfe5769, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bbe8d166b34374d3e9c9f099dcfe5769, type: 3}
---- !u!1 &6750870653750234715 stripped
+--- !u!1 &258171387759008701 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6789981924681045444, guid: bbe8d166b34374d3e9c9f099dcfe5769,
     type: 3}

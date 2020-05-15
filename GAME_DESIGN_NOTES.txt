@@ -77,6 +77,12 @@ Nucleus behavior:
     Idea 2:
         Cell parts form a graph, nucleus controls all cell parts in whatever
         connected component it is in
+        Sub-idea:
+            Detecting connected components is computationally expensive, so we
+            could have a coroutine which runs this algorithm, and always has a
+            partially computed result which may still be useful
+    Idea 3:
+        Nucleus commands propogate over joints, once per frame
     
 
 Cell maneuvering:
@@ -87,3 +93,10 @@ Cell maneuvering:
     Idea 3:
         You control the flagella with WASD, but they are "smart"; they apply
         force such that the front of the cell stays in front
+
+
+Cell joints:
+    How long should the joints be?
+    Can I get away with 0 length joints?
+    This would be easiest to implement
+    Could membranes have 0 length joints?

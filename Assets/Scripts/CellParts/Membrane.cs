@@ -114,7 +114,7 @@ public class Membrane : SimplePart {
     }
 
     public override float JointDesire(SimplePart other) {
-        return 2;
+        return 3;
     }
 
     public override float GetNearbyRadius() {

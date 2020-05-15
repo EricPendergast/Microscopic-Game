@@ -124,4 +124,10 @@ public class SimplePart : MonoBehaviour {
     }
 
     public virtual void OnCellPartExitNearby(SimplePart cp) {}
+
+    protected virtual void OnDestroy() {
+        foreach (JointWrapper joint in gameObject.GetComponents<JointWrapper>()) {
+            joint.Destroy();
+        }
+    }
 }

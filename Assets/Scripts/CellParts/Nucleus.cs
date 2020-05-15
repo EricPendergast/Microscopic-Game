@@ -16,6 +16,7 @@ public class Nucleus : SimplePart {
     public override void OnCellPartEnterNearby(SimplePart cp) {
         JointWrapper.MakeJoint(this, cp);
     }
+
     public override void ConfigureJointConstants(JointWrapper wrap) {
         SpringJoint2D sticky = wrap.GetOrMakeJoint<SpringJoint2D>();
         sticky.distance = .5f;
@@ -39,6 +40,6 @@ public class Nucleus : SimplePart {
     }
 
     public override float JointDesire(SimplePart sp) { 
-        return float.PositiveInfinity;
+        return 2;
     }
 }
