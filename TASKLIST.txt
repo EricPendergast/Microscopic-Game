@@ -37,9 +37,9 @@ Fix transfering of cell parts between cells
 
 Implement nucleus functionality
     ✓- Can move
-    - Can hold onto a few nearby cell parts
-    - Can move around other cell parts
+    ✓- Can hold onto a few nearby cell parts
     - Can control nearby cell parts
+    (will put this off)- Can move around other cell parts
 
 Make membranes self-healing
     - If a membrane joint breaks, replace it with a longer, weaker joint
